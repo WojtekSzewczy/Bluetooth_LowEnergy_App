@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable-v24/ic_down_arrow.xml" value="0.1215" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.196" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable-v24/ic_up_arrow.xml" value="0.1215" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btn_state_clicked_background.xml" value="0.2685" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btn_state_clicked_foreground.xml" value="0.2685" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btn_state_unclicked_background.xml" value="0.2685" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btn_state_unclicked_foreground.xml" value="0.2685" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btnsStateClicked_background.xml" value="0.242" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btnsStateClicked_foreground.xml" value="0.242" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btnsStateUnclicked_background.xml" value="0.242" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btnsStateUnclicked_foreground.xml" value="0.242" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btnstateclicked_foreground.xml" value="0.2685" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btnstateunclicked_foreground.xml" value="0.2685" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/connection_background.xml" value="0.196" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/connection_foreground.xml" value="0.196" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.196" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/activity_device_details.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/askdnja.xml" value="0.20260416666666667" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/card_layout.xml" value="0.4" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/fragment_device_details.xml" value="0.25677083333333334" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/fragment_home.xml" value="0.32711621233859395" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/btnsStateUnclicked.xml" value="0.2685" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
