@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BLE2</string>
+    <string name="scan">Scan</string>
+    <string name="stop">Stop</string>
+</resources>
