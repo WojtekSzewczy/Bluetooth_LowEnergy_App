@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
-import com.example.ble2.MyScanResult
 import com.example.ble2.R
 import com.example.ble2.Services
+import com.example.ble2.data.MyScanResult
 import com.example.ble2.databinding.FragmentDeviceDetailsBinding
 import com.example.ble2.ui.home.Home
 

@@ -8,13 +8,14 @@ import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.ble2.data.MyScanResult
 import java.util.*
 
 object Services {
 
     private val addressResults = ArrayList<String>()
     private val bluetoothManager = getSystemService(
-        BleApplication.appContext,
+        MainApplication.appContext,
         BluetoothManager::class.java
     ) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter = bluetoothManager.adapter
@@ -163,7 +164,7 @@ object Services {
     }
 
     fun connect(device: MyScanResult) {
-        device.scanResult.device.connectGatt(BleApplication.appContext, false, mGattCallback)
+        device.scanResult.device.connectGatt(MainApplication.appContext, false, mGattCallback)
     }
 
     fun disconnectWithDevice(device: MyScanResult?) {

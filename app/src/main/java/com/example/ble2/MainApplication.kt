@@ -3,7 +3,7 @@ package com.example.ble2
 import android.app.Application
 import android.content.Context
 
-class BleApplication : Application() {
+class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ble2.data.FavouritedDevices
+import com.example.ble2.data.MyScanResult
 import com.example.ble2.databinding.CardLayoutBinding
 import com.example.ble2.ui.details.DeviceDetails
 
@@ -92,14 +94,14 @@ class DeviceAdapter : ListAdapter<MyScanResult, DeviceAdapter.DeviceViewHolder>(
         )
         FavouritedDevices.editor.commit()
     }
-}
 
-private fun replaceFragment(fragment: Fragment, fragmentManager1: FragmentManager) {
+    private fun replaceFragment(fragment: Fragment, fragmentManager1: FragmentManager) {
 
-    val fragmentManager = fragmentManager1
-    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-    fragmentTransaction.replace(R.id.frame_layout, fragment)
-    fragmentTransaction.commit()
+        val fragmentManager = fragmentManager1
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frame_layout, fragment)
+        fragmentTransaction.commit()
+    }
 }
 
 class DeviceCallback : DiffUtil.ItemCallback<MyScanResult>() {
