@@ -1,15 +1,14 @@
 package com.example.ble2.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.ble2.DeviceAdapter
 import com.example.ble2.R
 import com.example.ble2.databinding.FragmentHomeBinding
+import com.example.ble2.ui.adapter.DeviceAdapter
 
 class Home : Fragment() {
 
@@ -26,10 +25,9 @@ class Home : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter2 = DeviceAdapter()
-        adapter2.submitList(viewModel.results.value)
-        setupUI(adapter2)
-        observeViewModelState(adapter2)
+        val adapter = DeviceAdapter()
+        setupUI(adapter)
+        observeViewModelState(adapter)
     }
 
     private fun setupUI(adapter: DeviceAdapter) {
@@ -41,9 +39,10 @@ class Home : Fragment() {
 
     private fun observeViewModelState(adapter: DeviceAdapter) {
         viewModel.results.observe(viewLifecycleOwner) { scanResults ->
-            adapter.submitList(scanResults)
-            Log.v("itemCont", adapter.itemCount.toString())
-            adapter.notifyDataSetChanged()
+            adapter.apply {
+                submitList(scanResults)
+                notifyDataSetChanged()
+            }
         }
         viewModel.isScanning.observe(viewLifecycleOwner) { currentState ->
             binding.scanButton.text =

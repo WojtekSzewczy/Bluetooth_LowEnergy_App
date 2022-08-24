@@ -8,7 +8,6 @@ data class MyScanResult(var scanResult: ScanResult) {
     var isFavourited = false
     var isAddedToFavourited = false
     var isConnected: Boolean = false
-    var imageViewVisibility = false
     var diodeFlag = false
     var diodeReadValue = ""
     var bluetoothGatt: BluetoothGatt? = null
