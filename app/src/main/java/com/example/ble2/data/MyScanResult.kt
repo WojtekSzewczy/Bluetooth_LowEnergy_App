@@ -5,8 +5,6 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.le.ScanResult
 
 data class MyScanResult(var scanResult: ScanResult) {
-    var isFavourited = false
-    var isAddedToFavourited = false
     var isConnected: Boolean = false
     var diodeFlag = false
     var diodeReadValue = ""
