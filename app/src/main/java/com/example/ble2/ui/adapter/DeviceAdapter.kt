@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.ble2.data.MyScanResult
+import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.CardLayoutBinding
 
-class DeviceAdapter : ListAdapter<MyScanResult, DeviceViewHolder>(DeviceCallback()) {
+class DeviceAdapter : ListAdapter<ScannedDevice, DeviceViewHolder>(DeviceCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -21,12 +21,12 @@ class DeviceAdapter : ListAdapter<MyScanResult, DeviceViewHolder>(DeviceCallback
     }
 }
 
-class DeviceCallback : DiffUtil.ItemCallback<MyScanResult>() {
-    override fun areItemsTheSame(oldItem: MyScanResult, newItem: MyScanResult): Boolean {
-        return oldItem.scanResult.device.address == newItem.scanResult.device.address
+class DeviceCallback : DiffUtil.ItemCallback<ScannedDevice>() {
+    override fun areItemsTheSame(oldItem: ScannedDevice, newItem: ScannedDevice): Boolean {
+        return oldItem.address == newItem.address
     }
 
-    override fun areContentsTheSame(oldItem: MyScanResult, newItem: MyScanResult): Boolean {
+    override fun areContentsTheSame(oldItem: ScannedDevice, newItem: ScannedDevice): Boolean {
         return oldItem == newItem
     }
 }

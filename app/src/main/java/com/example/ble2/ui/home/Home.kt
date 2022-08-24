@@ -38,9 +38,9 @@ class Home : Fragment() {
     }
 
     private fun observeViewModelState(adapter: DeviceAdapter) {
-        viewModel.results.observe(viewLifecycleOwner) { scanResults ->
+        viewModel.devices.observe(viewLifecycleOwner) { devices ->
             adapter.apply {
-                submitList(scanResults)
+                submitList(devices)
                 notifyDataSetChanged()
             }
         }

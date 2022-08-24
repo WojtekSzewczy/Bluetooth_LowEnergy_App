@@ -12,13 +12,16 @@ import androidx.fragment.app.viewModels
 import com.example.ble2.R
 import com.example.ble2.Services
 import com.example.ble2.data.MyScanResult
+import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentDeviceDetailsBinding
 import com.example.ble2.ui.home.Home
 
-class DeviceDetails(val device: MyScanResult) : Fragment() {
+class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
 
     lateinit var binding: FragmentDeviceDetailsBinding
     private val viewModel: DetailsViewModel by viewModels()
+
+    private val device: MyScanResult = MyScanResult(scannedDevice.result)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +47,6 @@ class DeviceDetails(val device: MyScanResult) : Fragment() {
         }
         binding.buttonBack.setOnClickListener {
             Services.disconnectWithDevice(device)
-            replaceFragment(Home())
         }
         binding.buttonServices.setOnClickListener {
 

@@ -6,19 +6,19 @@ object FavouritedDevices {
     val favourited = MainApplication.appContext.getSharedPreferences("Pref", 0)
     private val editor = favourited.edit()
 
-    fun removeFromFavourite(device: MyScanResult) {
-        editor.remove(device.scanResult.device.address)
+    fun removeFromFavourite(address: String) {
+        editor.remove(address)
         editor.commit()
     }
 
-    fun addToFavourite(device: MyScanResult) {
+    fun addToFavourite(address: String) {
         editor.putString(
-            device.scanResult.device.address,
-            device.scanResult.device.address
+            address,
+            address
         )
         editor.commit()
     }
 
-    fun isFavourite(device: MyScanResult) =
-        favourited.getString(device.scanResult.device.address, null) != null
+    fun isFavourite(address: String) =
+        favourited.getString(address, null) != null
 }

@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.le.ScanResult
 
 data class MyScanResult(var scanResult: ScanResult) {
-    var isConnected: Boolean = false
     var diodeFlag = false
     var diodeReadValue = ""
     var bluetoothGatt: BluetoothGatt? = null

@@ -11,36 +11,35 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ble2.R
 import com.example.ble2.Services
 import com.example.ble2.data.FavouritedDevices
-import com.example.ble2.data.MyScanResult
+import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.CardLayoutBinding
 import com.example.ble2.ui.details.DeviceDetails
 
 class DeviceViewHolder(val binding: CardLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(result: MyScanResult) {
-        val device = result.scanResult.device
+    fun bind(device: ScannedDevice) {
 
         binding.cardView.setOnClickListener {
             val manager = (itemView.context as FragmentActivity).supportFragmentManager
             Services.stopBleScan()
-            replaceFragment(DeviceDetails(result), manager)
+            replaceFragment(DeviceDetails(device), manager)
             Log.d("everyOtherTime", "should replace fragment")
         }
         binding.favIcon.setOnClickListener {
             it as ImageView
 
-            if (!FavouritedDevices.isFavourite(result)) {
-                FavouritedDevices.addToFavourite(result)
+            if (!FavouritedDevices.isFavourite(device.address)) {
+                FavouritedDevices.addToFavourite(device.address)
                 it.setImageResource(R.drawable.full_heart)
             } else {
-                FavouritedDevices.removeFromFavourite(result)
+                FavouritedDevices.removeFromFavourite(device.address)
                 it.setImageResource(R.drawable.empty_heart)
             }
         }
         binding.deviceAddress.text = device.address
         binding.deviceName.text = device.name
 
-        if (!FavouritedDevices.isFavourite(result)) {
+        if (!FavouritedDevices.isFavourite(device.address)) {
             binding.favIcon.setImageResource(R.drawable.empty_heart)
         } else {
             binding.favIcon.setImageResource(R.drawable.full_heart)

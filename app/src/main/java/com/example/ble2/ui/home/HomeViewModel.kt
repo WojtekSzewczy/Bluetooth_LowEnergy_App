@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.ble2.Services
 
 class HomeViewModel : ViewModel() {
-    val results = Services.resultsLiveData
+    val devices = Services.scannedDevices
 
     private val _isScanning = MutableLiveData(false)
     val isScanning: LiveData<Boolean> = _isScanning
