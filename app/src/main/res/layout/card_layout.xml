@@ -2,7 +2,6 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,30 +22,20 @@
             android:id="@+id/colapsedLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:paddingLeft="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/Connection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/connection_foreground"
-                android:visibility="gone"
-                app:layout_constraintLeft_toRightOf="@id/device_name"
-                app:layout_constraintTop_toTopOf="@id/device_name" />
-
-
-            <ImageView
-                android:id="@+id/favUnclicked"
+                android:id="@+id/fav_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 android:src="@drawable/empty_heart"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                android:contentDescription="@string/favourite_icon" />
 
 
             <TextView
@@ -69,17 +58,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/expendedLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="30dp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/colapsedLayout"
-            tools:visibility="visible">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

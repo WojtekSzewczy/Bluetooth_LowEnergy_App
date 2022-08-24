@@ -21,7 +21,7 @@ object Services {
     private val bleScanner by lazy {
         bluetoothAdapter.bluetoothLeScanner
     }
-    private var deviceCounter = 0
+    var deviceCounter = 0
     private val results = mutableListOf<MyScanResult>()
     private val _resultsLiveData = MutableLiveData<List<MyScanResult>>(emptyList())
     val resultsLiveData: LiveData<List<MyScanResult>> = _resultsLiveData
@@ -43,6 +43,7 @@ object Services {
         ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
 
     fun clearScanList() {
+        deviceCounter = 0
         results.clear()
         addressResults.clear()
         updateResults()
@@ -65,42 +66,41 @@ object Services {
             super.onScanResult(callbackType, result)
             Log.v("ScanCallback", "ScanCallback")
             if (!addressResults.contains(result!!.device.address.toString())) {
-                deviceCounter++
                 result.let { addressResults.add(it.device.address.toString()) }
                 val newResult = MyScanResult(result)
                 addResult(newResult)
-
             }
-
-
         }
     }
 
     val mGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             val currentIndex = addressResults.indexOf(gatt.device.address)
-            if (newState == BluetoothAdapter.STATE_CONNECTED) {
-                resultsLiveData.value?.get(currentIndex)?.isConnected = true
-                resultsLiveData.value?.get(currentIndex)?.bluetoothGatt = gatt
-                _buttonStateListLiveData.postValue(false)
-                Log.v("connection", "connected")
+            when (newState) {
+                BluetoothAdapter.STATE_CONNECTED -> {
+                    resultsLiveData.value?.get(currentIndex)?.isConnected = true
+                    resultsLiveData.value?.get(currentIndex)?.bluetoothGatt = gatt
+                    _buttonStateListLiveData.postValue(false)
+                    Log.v("connection", "connected")
 
-                if (gatt.device.name == "Blinky Example") {
-                    gatt.discoverServices()
+                    if (gatt.device.name == "Blinky Example") {
+                        gatt.discoverServices()
 
-                } else {
-                    gatt.disconnect()
+                    } else {
+                        gatt.disconnect()
+                    }
+
                 }
-
-            } else {
-                Log.v("connection", "disconnected")
-                resultsLiveData.value?.get(currentIndex)?.isConnected = false
-                _isReady.postValue(ReadyState.NOT_READY)
-
+                BluetoothAdapter.STATE_DISCONNECTED -> {
+                    Log.v("connection", "disconnected")
+                    resultsLiveData.value?.get(currentIndex)?.isConnected = false
+                    _isReady.postValue(ReadyState.NOT_READY)
 
 
-                gatt.close()
 
+                    gatt.close()
+
+                }
             }
         }
 
@@ -158,27 +158,39 @@ object Services {
 
     fun addResult(newResult: MyScanResult) {
         results.add(newResult)
+        deviceCounter++
         _resultsLiveData.value = results
     }
 
-    fun deinitIsReadyFlag() {
-        _isReady.postValue(ReadyState.UNDEFINED)
-
+    fun connect(device: MyScanResult) {
+        device.scanResult.device.connectGatt(BleApplication.appContext, false, mGattCallback)
     }
 
-    fun connect(device: MyScanResult) {
+    fun disconnectWithDevice(device: MyScanResult?) {
         var counter = 0
-        device.scanResult.device.connectGatt(BleApplication.appContext, false, mGattCallback)
-        while (!device?.isConnected!!) {
+        device?.bluetoothGatt?.disconnect()
+        while ((device?.isConnected!!)) {
             Thread.sleep(20)
             counter++
             if (counter == 100) {
-                _isReady.postValue(ReadyState.NOT_READY)
-
                 break
             }
+
         }
     }
 
+    fun readCharacteristic(device: MyScanResult?) {
+        device?.bluetoothGatt?.readCharacteristic(device.characteristic)
+
+    }
+
+    fun writeDiode(device: MyScanResult?, signalOn: ByteArray) {
+        device?.characteristic?.value = signalOn
+        device?.bluetoothGatt?.writeCharacteristic(device.characteristic)
+    }
+
+    fun clearData() {
+        _isReady.value = ReadyState.UNDEFINED
+    }
 
 }

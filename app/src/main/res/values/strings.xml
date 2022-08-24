@@ -2,4 +2,10 @@
     <string name="app_name">BLE2</string>
     <string name="scan">Scan</string>
     <string name="stop">Stop</string>
+    <string name="favourite_icon">favourite icon</string>
+    <string name="diode_state">Diode State</string>
+    <string name="button_state">button state</string>
+    <string name="back">Back</string>
+    <string name="services">services</string>
+    <string name="hide_services">hide services</string>
 </resources>

@@ -9,7 +9,7 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    tools:context=".DeviceDetails">
+    tools:context=".ui.details.DeviceDetails">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -27,8 +27,7 @@
         android:id="@+id/device_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ADDRES"
-        android:textSize="40dp"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +42,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/device_address"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="@string/diode_state" />
 
     <ImageView
         android:id="@+id/ButtonState"
@@ -53,7 +53,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/device_address"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="@string/button_state" />
+
+    <TextView
+        android:id="@+id/uuids"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/DiodeControll"
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
 
     <Button
         android:id="@+id/buttonBack"
@@ -61,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:text="Back"
+        android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
@@ -73,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
-        android:text="services"
+        android:text="@string/services"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"

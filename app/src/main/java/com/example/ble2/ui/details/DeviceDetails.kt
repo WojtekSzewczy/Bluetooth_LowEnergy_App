@@ -1,4 +1,4 @@
-package com.example.ble2
+package com.example.ble2.ui.details
 
 import android.os.Bundle
 import android.util.Log
@@ -8,60 +8,64 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import com.example.ble2.MyScanResult
+import com.example.ble2.R
+import com.example.ble2.Services
 import com.example.ble2.databinding.FragmentDeviceDetailsBinding
-import com.example.ble2.ui.details.DetailsViewModel
 import com.example.ble2.ui.home.Home
 
-// TODO: Rename parameter arguments, choose names that match
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DeviceDetails.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DeviceDetails(val device: MyScanResult) : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private lateinit var binding: FragmentDeviceDetailsBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    lateinit var binding: FragmentDeviceDetailsBinding
+    private val viewModel: DetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentDeviceDetailsBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("everyOtherTime", "hello world")
 
-        val viewModel = ViewModelProvider(this).get(DetailsViewModel::class.java)
         Services.connect(device)
-        // connectToDevice(device)
+        observeViewModelState()
+        setupUI()
+    }
 
+    private fun setupUI() {
+        binding.deviceAddress.text = device.scanResult.device.address
+        binding.DiodeControll.setOnClickListener {
+            diodeControll()
+        }
+        binding.buttonBack.setOnClickListener {
+            Services.disconnectWithDevice(device)
+            replaceFragment(Home())
+        }
+        binding.buttonServices.setOnClickListener {
+
+            viewModel.switchButtonText()
+
+        }
+    }
+
+    private fun observeViewModelState() {
         viewModel.isReady.observe(viewLifecycleOwner) {
             when (it) {
                 Services.ReadyState.READY -> {
                     Log.v("isReady", "is")
                     binding.progressBar.visibility = View.GONE
+                    binding.uuids.text = getUUIDS()
+
                     makeVisible()
                 }
                 Services.ReadyState.NOT_READY -> {
                     Log.v("isReady", "is not")
+                    Log.d("everyOtherTime", "will go back")
                     val home: Home = Home()
                     replaceFragment(home)
                 }
@@ -73,29 +77,33 @@ class DeviceDetails(val device: MyScanResult) : Fragment() {
 
 
         }
-
-
-
-        binding.deviceAddress.text = device.scanResult.device.address
-        binding.DiodeControll.setOnClickListener {
-            diodeControll()
-        }
-
         viewModel.buttonStateList.observe(viewLifecycleOwner) {
-            if (!it) {
-                binding.ButtonState.setImageResource(R.drawable.btn_state_clicked_foreground)
-            } else {
-                binding.ButtonState.setImageResource(R.drawable.btn_state_unclicked_foreground)
+            binding.ButtonState.setImageResource(if (!it) R.drawable.btn_state_clicked_foreground else R.drawable.btn_state_unclicked_foreground)
+
+        }
+        viewModel.areServicesVisible.observe(viewLifecycleOwner) { currenState ->
+            binding.uuids.visibility = if (currenState) View.GONE else View.VISIBLE
+            binding.buttonServices.text =
+                if (currenState) getString(R.string.services) else getString(R.string.hide_services)
+        }
+    }
+
+    private fun getUUIDS(): String {
+        var servicesAndCharacteristics = ""
+        device.bluetoothGatt?.services?.forEach {
+            servicesAndCharacteristics += "UUID: "
+            servicesAndCharacteristics += it.uuid.toString()
+            servicesAndCharacteristics += "\n"
+            it.characteristics.forEach {
+                servicesAndCharacteristics += "   CHARACTERISTIC: "
+                servicesAndCharacteristics += it.uuid.toString()
+                servicesAndCharacteristics += "\n"
+//                Log.v("string", servicesAndCharacteristics)
             }
-        }
-        binding.buttonBack.setOnClickListener {
-            disconnectWithDevice(device)
-
-            val home: Home = Home()
-            replaceFragment(home)
+            servicesAndCharacteristics += "\n"
 
         }
-
+        return servicesAndCharacteristics
     }
 
     private fun makeVisible() {
@@ -103,7 +111,7 @@ class DeviceDetails(val device: MyScanResult) : Fragment() {
         binding.deviceAddress.visibility = View.VISIBLE
         binding.ButtonState.visibility = View.VISIBLE
         binding.buttonBack.visibility = View.VISIBLE
-
+        binding.buttonServices.visibility = View.VISIBLE
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -115,7 +123,7 @@ class DeviceDetails(val device: MyScanResult) : Fragment() {
 
     fun diodeControll() {
         if (!device.diodeFlag) {
-            readCharacteristic(device)
+            Services.readCharacteristic(device)
             while (device.characteristic?.value.contentToString() == "null") {
                 Thread.sleep(10)
             }
@@ -124,12 +132,7 @@ class DeviceDetails(val device: MyScanResult) : Fragment() {
         toggleDiode(device)
     }
 
-    fun readCharacteristic(device: MyScanResult?) { //jakoś przerzucic do serwisów
-        device?.bluetoothGatt?.readCharacteristic(device.characteristic)
-
-    }
-
-    private fun toggleDiode(device: MyScanResult?) {
+    fun toggleDiode(device: MyScanResult?) {
         val signalOn: ByteArray
         Log.v("toggle", device?.diodeReadValue.toString())
         if (device?.diodeReadValue == "[0]") {
@@ -141,36 +144,12 @@ class DeviceDetails(val device: MyScanResult) : Fragment() {
             device?.diodeReadValue = "[0]"
             signalOn = byteArrayOf(0x00)
         }
-        device?.characteristic?.value = signalOn
-        device?.bluetoothGatt?.writeCharacteristic(device.characteristic)
+        Services.writeDiode(device, signalOn)
     }
 
-    private fun disconnectWithDevice(device: MyScanResult?) {
-        var counter = 0
-        Services.deinitIsReadyFlag()
-        device?.bluetoothGatt?.disconnect()
-        while ((device?.isConnected!!)) {
-            Thread.sleep(20)
-            counter++
-            if (counter == 100) {
-                break
-            }
-
-        }
-    }
-
-    private fun connectToDevice(device: MyScanResult?) {
-        var counter = 0
-        Services.deinitIsReadyFlag()
-        device?.scanResult?.device?.connectGatt(binding.root.context, false, Services.mGattCallback)
-        while (!device?.isConnected!!) {
-            Thread.sleep(20)
-            counter++
-            if (counter == 100) {
-
-                break
-            }
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Services.clearData()
     }
 
 }
