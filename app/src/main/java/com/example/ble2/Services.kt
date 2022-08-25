@@ -29,9 +29,6 @@ object Services {
     private val _scannedDevices = MutableLiveData<List<ScannedDevice>>(emptyList())
     val scannedDevices: LiveData<List<ScannedDevice>> = _scannedDevices
 
-    private val _buttonStateListLiveData = MutableLiveData(false)
-    val buttonStateListLiveData: LiveData<Boolean> = _buttonStateListLiveData
-
     private val _isReady = MutableLiveData(ReadyState.UNDEFINED)
     val isReady: LiveData<ReadyState> = _isReady
 
@@ -85,7 +82,6 @@ object Services {
             when (newState) {
                 BluetoothAdapter.STATE_CONNECTED -> {
                     currentBlinkyDevice?.bluetoothGatt = gatt
-                    _buttonStateListLiveData.postValue(false)
                     Log.d("connection", "connected")
                     if (gatt.device.name == "Blinky Example") {
                         gatt.discoverServices()
@@ -110,7 +106,8 @@ object Services {
             descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
             gatt.writeDescriptor(descriptor)
             Log.v("after", "setNotification")
-            currentBlinkyDevice?.characteristic = gatt.services[3].characteristics[0]
+            currentBlinkyDevice?.DiodeCharacteristic = gatt.services[3].characteristics[0]
+            currentBlinkyDevice?.ButtonCharacteristic = gatt.services[3].characteristics[1]
             _isReady.postValue(ReadyState.READY)
 
         }
@@ -120,9 +117,13 @@ object Services {
             characteristic: BluetoothGattCharacteristic,
             status: Int
         ) {
-            Log.v("onCharacteristicRead", characteristic.value.contentToString())
-            if (characteristic == gatt.services[3].characteristics[0]) {
-                currentBlinkyDevice?.setDiodeState(characteristic.value.contentToString())
+            when (characteristic) {
+                gatt.services[3].characteristics[0] -> {
+                    currentBlinkyDevice?.setDiodeState(characteristic.value.contentToString())
+                }
+                gatt.services[3].characteristics[1] -> {
+                    currentBlinkyDevice?.setButtonState(characteristic.value.contentToString())
+                }
             }
         }
 
@@ -132,35 +133,34 @@ object Services {
         ) {
 
             if (characteristic == gatt.services[3].characteristics[1]) {
-                if (!_buttonStateListLiveData.value!!) {
-                    _buttonStateListLiveData.postValue(true)
-                } else {
-                    _buttonStateListLiveData.postValue(false)
-                }
+                currentBlinkyDevice?.togleButtonState()
             }
-
         }
     }
 
     fun connect(device: BlinkyDevice) {
         currentBlinkyDevice = device
-        currentBlinkyDevice!!.device.connectGatt(MainApplication.appContext, false, mGattCallback)
+        currentBlinkyDevice!!.device.connectGatt(
+            MainApplication.appContext,
+            false,
+            mGattCallback
+        )
     }
 
     fun disconnectWithDevice() {
         currentBlinkyDevice?.bluetoothGatt?.disconnect()
     }
 
-    fun readCharacteristic() {
+    fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
         Log.v("readCharacteristic", "fromCallback")
 
-        currentBlinkyDevice?.bluetoothGatt?.readCharacteristic(currentBlinkyDevice!!.characteristic)
+        currentBlinkyDevice?.bluetoothGatt?.readCharacteristic(characteristic)
 
     }
 
     fun writeDiode(signalOn: ByteArray) {
-        currentBlinkyDevice?.characteristic?.value = signalOn
-        currentBlinkyDevice?.bluetoothGatt?.writeCharacteristic(currentBlinkyDevice!!.characteristic)
+        currentBlinkyDevice?.DiodeCharacteristic?.value = signalOn
+        currentBlinkyDevice?.bluetoothGatt?.writeCharacteristic(currentBlinkyDevice!!.DiodeCharacteristic)
     }
 
     fun clearData() {

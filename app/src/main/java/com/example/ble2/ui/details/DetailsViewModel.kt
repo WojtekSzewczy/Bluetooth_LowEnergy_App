@@ -7,7 +7,7 @@ import com.example.ble2.Services
 
 class DetailsViewModel : ViewModel() {
 
-    val buttonStateList = Services.buttonStateListLiveData
+    //val buttonStateList = Services.buttonStateListLiveData
     val isReady = Services.isReady
 
     private val _areServicesVisible = MutableLiveData(true)

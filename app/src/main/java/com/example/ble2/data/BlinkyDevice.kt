@@ -12,10 +12,19 @@ class BlinkyDevice(val device: BluetoothDevice) {
     private val _diodeState = MutableLiveData(DiodeState.UNDEFINED)
     val diodeState: LiveData<DiodeState> = _diodeState
 
+    private val _buttonState = MutableLiveData(ButtonState.UNDEFINED)
+    val buttonState: LiveData<ButtonState> = _buttonState
+
     enum class DiodeState {
         UNDEFINED,
         ON,
         OFF
+    }
+
+    enum class ButtonState {
+        UNDEFINED,
+        CLICKED,
+        UNCLICKED
     }
 
     fun setDiodeState(state: String) {
@@ -24,6 +33,23 @@ class BlinkyDevice(val device: BluetoothDevice) {
         } else {
             _diodeState.postValue(DiodeState.OFF)
         }
+    }
+
+    fun setButtonState(state: String) {
+        if (state == "[1]") {
+            _buttonState.postValue(ButtonState.CLICKED)
+        } else {
+            _buttonState.postValue(ButtonState.UNCLICKED)
+        }
+    }
+
+    fun togleButtonState() {
+        if (_buttonState.value == ButtonState.CLICKED) {
+            _buttonState.postValue(ButtonState.UNCLICKED)
+        } else if (_buttonState.value == ButtonState.UNCLICKED) {
+            _buttonState.postValue(ButtonState.CLICKED)
+        }
+
     }
 
     fun togleDiodeState() {
@@ -46,5 +72,6 @@ class BlinkyDevice(val device: BluetoothDevice) {
     }
 
     var bluetoothGatt: BluetoothGatt? = null
-    var characteristic: BluetoothGattCharacteristic? = null
+    var DiodeCharacteristic: BluetoothGattCharacteristic? = null
+    var ButtonCharacteristic: BluetoothGattCharacteristic? = null
 }

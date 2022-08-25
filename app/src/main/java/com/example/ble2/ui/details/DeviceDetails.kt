@@ -46,7 +46,9 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     binding.uuids.text = getUUIDS()
                     Thread.sleep(200)
-                    Services.readCharacteristic()
+                    Services.readCharacteristic(blinkyDevice.DiodeCharacteristic!!)
+                    Thread.sleep(200)
+                    Services.readCharacteristic(blinkyDevice.ButtonCharacteristic!!)
                     makeVisible()
                 }
                 Services.ReadyState.NOT_READY -> {
@@ -79,11 +81,19 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
                 }
             }
         }
+        blinkyDevice.buttonState.observe(viewLifecycleOwner) {
+            when (it) {
+                BlinkyDevice.ButtonState.UNDEFINED -> {}
+                BlinkyDevice.ButtonState.CLICKED -> {
+                    binding.ButtonState.setImageResource(R.drawable.btn_state_clicked_foreground)
+                }
+                BlinkyDevice.ButtonState.UNCLICKED -> {
+                    binding.ButtonState.setImageResource(R.drawable.btn_state_unclicked_foreground)
 
-        viewModel.buttonStateList.observe(viewLifecycleOwner) {
-            binding.ButtonState.setImageResource(if (!it) R.drawable.btn_state_clicked_foreground else R.drawable.btn_state_unclicked_foreground)
-
+                }
+            }
         }
+
         viewModel.areServicesVisible.observe(viewLifecycleOwner) { currenState ->
             binding.uuids.visibility = if (currenState) View.GONE else View.VISIBLE
             binding.buttonServices.text =
