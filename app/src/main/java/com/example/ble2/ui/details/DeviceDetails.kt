@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import com.example.ble2.R
 import com.example.ble2.Services
-import com.example.ble2.data.MyScanResult
+import com.example.ble2.data.BlinkyDevice
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentDeviceDetailsBinding
 import com.example.ble2.ui.home.Home
@@ -21,7 +21,7 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
     lateinit var binding: FragmentDeviceDetailsBinding
     private val viewModel: DetailsViewModel by viewModels()
 
-    private val device: MyScanResult = MyScanResult(scannedDevice.result)
+    private val blinkyDevice: BlinkyDevice = BlinkyDevice(scannedDevice.result.device)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,26 +33,9 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("everyOtherTime", "hello world")
-
-        Services.connect(device)
+        Services.connect(blinkyDevice)
         observeViewModelState()
         setupUI()
-    }
-
-    private fun setupUI() {
-        binding.deviceAddress.text = device.scanResult.device.address
-        binding.DiodeControll.setOnClickListener {
-            diodeControll()
-        }
-        binding.buttonBack.setOnClickListener {
-            Services.disconnectWithDevice(device)
-        }
-        binding.buttonServices.setOnClickListener {
-
-            viewModel.switchButtonText()
-
-        }
     }
 
     private fun observeViewModelState() {
@@ -62,14 +45,14 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
                     Log.v("isReady", "is")
                     binding.progressBar.visibility = View.GONE
                     binding.uuids.text = getUUIDS()
-
+                    Thread.sleep(200)
+                    Services.readCharacteristic()
                     makeVisible()
                 }
                 Services.ReadyState.NOT_READY -> {
                     Log.v("isReady", "is not")
                     Log.d("everyOtherTime", "will go back")
-                    val home: Home = Home()
-                    replaceFragment(home)
+                    replaceFragment(Home())
                 }
                 Services.ReadyState.UNDEFINED -> {
                     Log.v("is Ready", "undefined")
@@ -79,6 +62,24 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
 
 
         }
+        blinkyDevice.diodeState.observe(viewLifecycleOwner) {
+            when (it) {
+                BlinkyDevice.DiodeState.UNDEFINED -> {
+                    Log.v("diodeLivedata", "UNDEFINEA")
+                }
+                BlinkyDevice.DiodeState.ON -> {
+                    binding.DiodeControll.setImageResource(R.drawable.btn_state_clicked_foreground)
+                    blinkyDevice.turnDidodeOn()
+
+                }
+                BlinkyDevice.DiodeState.OFF -> {
+                    binding.DiodeControll.setImageResource(R.drawable.btn_state_unclicked_foreground)
+                    blinkyDevice.turnDiodeOff()
+
+                }
+            }
+        }
+
         viewModel.buttonStateList.observe(viewLifecycleOwner) {
             binding.ButtonState.setImageResource(if (!it) R.drawable.btn_state_clicked_foreground else R.drawable.btn_state_unclicked_foreground)
 
@@ -90,9 +91,26 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
         }
     }
 
+
+    private fun setupUI() {
+        binding.deviceAddress.text = blinkyDevice.device.address
+        binding.DiodeControll.setOnClickListener {
+            blinkyDevice.togleDiodeState()
+        }
+        binding.buttonBack.setOnClickListener {
+            Services.disconnectWithDevice()
+        }
+        binding.buttonServices.setOnClickListener {
+
+            viewModel.switchButtonText()
+
+        }
+    }
+
+
     private fun getUUIDS(): String {
         var servicesAndCharacteristics = ""
-        device.bluetoothGatt?.services?.forEach {
+        blinkyDevice.bluetoothGatt?.services?.forEach {
             servicesAndCharacteristics += "UUID: "
             servicesAndCharacteristics += it.uuid.toString()
             servicesAndCharacteristics += "\n"
@@ -100,7 +118,6 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
                 servicesAndCharacteristics += "   CHARACTERISTIC: "
                 servicesAndCharacteristics += it.uuid.toString()
                 servicesAndCharacteristics += "\n"
-//                Log.v("string", servicesAndCharacteristics)
             }
             servicesAndCharacteristics += "\n"
 
@@ -121,32 +138,6 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
         val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout, fragment)
         fragmentTransaction.commit()
-    }
-
-    fun diodeControll() {
-        if (!device.diodeFlag) {
-            Services.readCharacteristic(device)
-            while (device.characteristic?.value.contentToString() == "null") {
-                Thread.sleep(10)
-            }
-            device.diodeFlag = !device.diodeFlag
-        }
-        toggleDiode(device)
-    }
-
-    fun toggleDiode(device: MyScanResult?) {
-        val signalOn: ByteArray
-        Log.v("toggle", device?.diodeReadValue.toString())
-        if (device?.diodeReadValue == "[0]") {
-            binding.DiodeControll.setImageResource(R.drawable.btn_state_clicked_foreground)
-            signalOn = byteArrayOf(0x01)
-            device.diodeReadValue = "[1]"
-        } else {
-            binding.DiodeControll.setImageResource(R.drawable.btn_state_unclicked_foreground)
-            device?.diodeReadValue = "[0]"
-            signalOn = byteArrayOf(0x00)
-        }
-        Services.writeDiode(device, signalOn)
     }
 
     override fun onDestroyView() {

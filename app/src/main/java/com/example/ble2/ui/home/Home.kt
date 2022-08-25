@@ -41,7 +41,6 @@ class Home : Fragment() {
         viewModel.devices.observe(viewLifecycleOwner) { devices ->
             adapter.apply {
                 submitList(devices)
-                notifyDataSetChanged()
             }
         }
         viewModel.isScanning.observe(viewLifecycleOwner) { currentState ->

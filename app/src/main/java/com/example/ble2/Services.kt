@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.ble2.data.MyScanResult
+import com.example.ble2.data.BlinkyDevice
 import com.example.ble2.data.ScannedDevice
 import java.util.*
 
@@ -27,16 +27,15 @@ object Services {
 
     private val currentScannedDevices = mutableMapOf<String, ScannedDevice>()
     private val _scannedDevices = MutableLiveData<List<ScannedDevice>>(emptyList())
-
     val scannedDevices: LiveData<List<ScannedDevice>> = _scannedDevices
+
     private val _buttonStateListLiveData = MutableLiveData(false)
-
     val buttonStateListLiveData: LiveData<Boolean> = _buttonStateListLiveData
-    private val _isReady = MutableLiveData(ReadyState.UNDEFINED)
 
+    private val _isReady = MutableLiveData(ReadyState.UNDEFINED)
     val isReady: LiveData<ReadyState> = _isReady
 
-    private var currentBlinkyDevice: MyScanResult? = null
+    private var currentBlinkyDevice: BlinkyDevice? = null
 
     enum class ReadyState {
         UNDEFINED,
@@ -121,9 +120,9 @@ object Services {
             characteristic: BluetoothGattCharacteristic,
             status: Int
         ) {
+            Log.v("onCharacteristicRead", characteristic.value.contentToString())
             if (characteristic == gatt.services[3].characteristics[0]) {
-                currentBlinkyDevice?.diodeReadValue =
-                    characteristic.value.contentToString()
+                currentBlinkyDevice?.setDiodeState(characteristic.value.contentToString())
             }
         }
 
@@ -143,23 +142,25 @@ object Services {
         }
     }
 
-    fun connect(device: MyScanResult) {
+    fun connect(device: BlinkyDevice) {
         currentBlinkyDevice = device
-        device.scanResult.device.connectGatt(MainApplication.appContext, false, mGattCallback)
+        currentBlinkyDevice!!.device.connectGatt(MainApplication.appContext, false, mGattCallback)
     }
 
-    fun disconnectWithDevice(device: MyScanResult?) {
-        device?.bluetoothGatt?.disconnect()
+    fun disconnectWithDevice() {
+        currentBlinkyDevice?.bluetoothGatt?.disconnect()
     }
 
-    fun readCharacteristic(device: MyScanResult?) {
-        device?.bluetoothGatt?.readCharacteristic(device.characteristic)
+    fun readCharacteristic() {
+        Log.v("readCharacteristic", "fromCallback")
+
+        currentBlinkyDevice?.bluetoothGatt?.readCharacteristic(currentBlinkyDevice!!.characteristic)
 
     }
 
-    fun writeDiode(device: MyScanResult?, signalOn: ByteArray) {
-        device?.characteristic?.value = signalOn
-        device?.bluetoothGatt?.writeCharacteristic(device.characteristic)
+    fun writeDiode(signalOn: ByteArray) {
+        currentBlinkyDevice?.characteristic?.value = signalOn
+        currentBlinkyDevice?.bluetoothGatt?.writeCharacteristic(currentBlinkyDevice!!.characteristic)
     }
 
     fun clearData() {

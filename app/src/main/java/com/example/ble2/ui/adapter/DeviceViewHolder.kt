@@ -49,7 +49,6 @@ class DeviceViewHolder(val binding: CardLayoutBinding) :
             binding.cardView.setBackgroundColor(Color.parseColor("#fcba03"))
         } else {
             binding.cardView.setBackgroundColor(Color.parseColor("#933B3B"))
-
         }
     }
 
