@@ -131,7 +131,7 @@ object Services {
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic
         ) {
-
+            Log.v("asda", "Asdasda")
             if (characteristic == gatt.services[3].characteristics[1]) {
                 currentBlinkyDevice?.togleButtonState()
             }

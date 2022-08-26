@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
@@ -23,6 +24,15 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
 
     private val blinkyDevice: BlinkyDevice = BlinkyDevice(scannedDevice.result.device)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                Services.disconnectWithDevice()
+            }
+        })
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,10 +41,12 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Services.connect(blinkyDevice)
         observeViewModelState()
+        observeBlinky()
         setupUI()
     }
 
@@ -54,21 +66,24 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
                 Services.ReadyState.NOT_READY -> {
                     Log.v("isReady", "is not")
                     Log.d("everyOtherTime", "will go back")
-                    replaceFragment(Home())
+                    replaceFragment()
                 }
                 Services.ReadyState.UNDEFINED -> {
                     Log.v("is Ready", "undefined")
                 }
-                else -> {}
             }
-
-
         }
+        viewModel.areServicesVisible.observe(viewLifecycleOwner) { currenState ->
+            binding.uuids.visibility = if (currenState) View.GONE else View.VISIBLE
+            binding.buttonServices.text =
+                if (currenState) getString(R.string.services) else getString(R.string.hide_services)
+        }
+    }
+
+    private fun observeBlinky() {
         blinkyDevice.diodeState.observe(viewLifecycleOwner) {
             when (it) {
-                BlinkyDevice.DiodeState.UNDEFINED -> {
-                    Log.v("diodeLivedata", "UNDEFINEA")
-                }
+                BlinkyDevice.DiodeState.UNDEFINED -> {}
                 BlinkyDevice.DiodeState.ON -> {
                     binding.DiodeControll.setImageResource(R.drawable.btn_state_clicked_foreground)
                     blinkyDevice.turnDidodeOn()
@@ -93,12 +108,6 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
                 }
             }
         }
-
-        viewModel.areServicesVisible.observe(viewLifecycleOwner) { currenState ->
-            binding.uuids.visibility = if (currenState) View.GONE else View.VISIBLE
-            binding.buttonServices.text =
-                if (currenState) getString(R.string.services) else getString(R.string.hide_services)
-        }
     }
 
 
@@ -121,13 +130,9 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
     private fun getUUIDS(): String {
         var servicesAndCharacteristics = ""
         blinkyDevice.bluetoothGatt?.services?.forEach {
-            servicesAndCharacteristics += "UUID: "
-            servicesAndCharacteristics += it.uuid.toString()
-            servicesAndCharacteristics += "\n"
+            servicesAndCharacteristics += "UUID: " + it.uuid.toString() + "\n"
             it.characteristics.forEach {
-                servicesAndCharacteristics += "   CHARACTERISTIC: "
-                servicesAndCharacteristics += it.uuid.toString()
-                servicesAndCharacteristics += "\n"
+                servicesAndCharacteristics += "   CHARACTERISTIC: " + it.uuid.toString() + "\n"
             }
             servicesAndCharacteristics += "\n"
 
@@ -143,16 +148,19 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
         binding.buttonServices.visibility = View.VISIBLE
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment() {
+
         val manager = (view?.context as FragmentActivity).supportFragmentManager
         val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout, fragment)
+        fragmentTransaction.replace(R.id.frame_layout, Home())
         fragmentTransaction.commit()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         Services.clearData()
+
+
     }
 
 }
