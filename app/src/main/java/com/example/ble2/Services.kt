@@ -4,6 +4,8 @@ import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
@@ -34,6 +36,10 @@ object Services {
 
     private var currentBlinkyDevice: BlinkyDevice? = null
 
+    private var scanning = false
+    private val handler = Handler(Looper.getMainLooper())
+
+
     enum class ReadyState {
         UNDEFINED,
         READY,
@@ -43,6 +49,18 @@ object Services {
     fun startBleScan() {
         clearScanList()
         Log.v("scanner", "start")
+        val SCAN_PERIOD: Long = 10000
+        if (!scanning) { // Stops scanning after a pre-defined scan period.
+            handler.postDelayed({
+                scanning = false
+                scanner.stopScan(leScanCallback)
+            }, SCAN_PERIOD)
+            scanning = true
+            scanner.startScan(leScanCallback)
+        } else {
+            scanning = false
+            scanner.stopScan(leScanCallback)
+        }
         scanner.startScan(null, scanSettings, leScanCallback)
     }
 
@@ -65,7 +83,16 @@ object Services {
             super.onScanResult(callbackType, result)
             result?.let {
                 val device = ScannedDevice(result)
-                if (!currentScannedDevices.contains(device.address)) {
+                Log.v("uuid", result.scanRecord?.serviceUuids.toString() + result.device.address)
+                if (!currentScannedDevices.contains(device.address) || result.scanRecord?.serviceUuids.toString() == "[00001827-0000-1000-8000-00805f9b34fb]") {
+                    if (result.scanRecord?.serviceUuids.toString() == "[00001827-0000-1000-8000-00805f9b34fb]") {
+                        device.type = ScannedDevice.deviceType.MESH_DEVICE
+                        device.name = "BLUETOOTH MESH DEVICE"
+                    } else if (result.device.name == "Blinky Example") {
+                        device.type = ScannedDevice.deviceType.BLINKY_EXAMPLE
+                    } else {
+                        device.type = ScannedDevice.deviceType.OTHER
+                    }
                     addDevice(device)
                 }
             }
@@ -83,11 +110,12 @@ object Services {
                 BluetoothAdapter.STATE_CONNECTED -> {
                     currentBlinkyDevice?.bluetoothGatt = gatt
                     Log.d("connection", "connected")
-                    if (gatt.device.name == "Blinky Example") {
-                        gatt.discoverServices()
-                    } else {
-                        gatt.disconnect()
-                    }
+                    if (currentBlinkyDevice.device.name == "Blinky Example")
+                        if (gatt.device.name == "Blinky Example") {
+                            gatt.discoverServices()
+                        } else {
+                            gatt.disconnect()
+                        }
                 }
                 BluetoothAdapter.STATE_DISCONNECTED -> {
                     Log.d("connection", "disconnected")
@@ -131,7 +159,6 @@ object Services {
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic
         ) {
-            Log.v("asda", "Asdasda")
             if (characteristic == gatt.services[3].characteristics[1]) {
                 currentBlinkyDevice?.togleButtonState()
             }
