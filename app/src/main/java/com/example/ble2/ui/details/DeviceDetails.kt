@@ -22,13 +22,14 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
     lateinit var binding: FragmentDeviceDetailsBinding
     private val viewModel: DetailsViewModel by viewModels()
 
-    private val blinkyDevice: BlinkyDevice = BlinkyDevice(scannedDevice.result.device)
+    private val blinkyDevice: BlinkyDevice =
+        BlinkyDevice(scannedDevice.result, scannedDevice.type!!)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Services.disconnectWithDevice()
+                blinkyDevice.disconnect()
             }
         })
     }
@@ -44,23 +45,23 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Services.connect(blinkyDevice)
+        blinkyDevice.connect()
         observeViewModelState()
         observeBlinky()
         setupUI()
     }
 
     private fun observeViewModelState() {
-        viewModel.isReady.observe(viewLifecycleOwner) {
+        blinkyDevice.isReady.observe(viewLifecycleOwner) {
             when (it) {
                 Services.ReadyState.READY -> {
                     Log.v("isReady", "is")
                     binding.progressBar.visibility = View.GONE
                     binding.uuids.text = getUUIDS()
                     Thread.sleep(200)
-                    Services.readCharacteristic(blinkyDevice.DiodeCharacteristic!!)
+                    blinkyDevice.readCharacteristic(blinkyDevice.DiodeCharacteristic!!)
                     Thread.sleep(200)
-                    Services.readCharacteristic(blinkyDevice.ButtonCharacteristic!!)
+                    blinkyDevice.readCharacteristic(blinkyDevice.ButtonCharacteristic!!)
                     makeVisible()
                 }
                 Services.ReadyState.NOT_READY -> {
@@ -112,12 +113,12 @@ class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
 
 
     private fun setupUI() {
-        binding.deviceAddress.text = blinkyDevice.device.address
+        binding.deviceAddress.text = blinkyDevice.result.device.address
         binding.DiodeControll.setOnClickListener {
             blinkyDevice.togleDiodeState()
         }
         binding.buttonBack.setOnClickListener {
-            Services.disconnectWithDevice()
+            blinkyDevice.disconnect()
         }
         binding.buttonServices.setOnClickListener {
 

@@ -110,12 +110,13 @@ object Services {
                 BluetoothAdapter.STATE_CONNECTED -> {
                     currentBlinkyDevice?.bluetoothGatt = gatt
                     Log.d("connection", "connected")
-                    if (currentBlinkyDevice.device.name == "Blinky Example")
-                        if (gatt.device.name == "Blinky Example") {
-                            gatt.discoverServices()
-                        } else {
-                            gatt.disconnect()
-                        }
+                    if (currentBlinkyDevice?.deviceType == ScannedDevice.deviceType.MESH_DEVICE || currentBlinkyDevice?.deviceType == ScannedDevice.deviceType.BLINKY_EXAMPLE) {
+                        Log.d("connection", "is corect device")
+                        gatt.discoverServices()
+                    } else {
+                        gatt.disconnect()
+                    }
+
                 }
                 BluetoothAdapter.STATE_DISCONNECTED -> {
                     Log.d("connection", "disconnected")
@@ -167,7 +168,7 @@ object Services {
 
     fun connect(device: BlinkyDevice) {
         currentBlinkyDevice = device
-        currentBlinkyDevice!!.device.connectGatt(
+        currentBlinkyDevice!!.result.device.connectGatt(
             MainApplication.appContext,
             false,
             mGattCallback

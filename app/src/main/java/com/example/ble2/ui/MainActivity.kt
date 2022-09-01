@@ -6,8 +6,6 @@ import androidx.fragment.app.Fragment
 import com.example.ble2.R
 import com.example.ble2.databinding.ActivityMainBinding
 import com.example.ble2.ui.home.Home
-import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
-import com.siliconlab.bluetoothmesh.adk.configuration.BluetoothMeshConfiguration
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,8 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        BluetoothMesh.initialize(this, BluetoothMeshConfiguration())
-        var mesh = BluetoothMesh.getInstance()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(Home())

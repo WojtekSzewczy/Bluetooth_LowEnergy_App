@@ -1,8 +1,8 @@
 package com.example.ble2.ui.adapter
 
 import android.graphics.Color
-import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -14,6 +14,7 @@ import com.example.ble2.data.FavouritedDevices
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.CardLayoutBinding
 import com.example.ble2.ui.details.DeviceDetails
+import com.example.ble2.ui.details.MeshDeviceFragment
 
 class DeviceViewHolder(val binding: CardLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -22,8 +23,15 @@ class DeviceViewHolder(val binding: CardLayoutBinding) :
         binding.cardView.setOnClickListener {
             val manager = (itemView.context as FragmentActivity).supportFragmentManager
             Services.stopBleScan()
-            replaceFragment(DeviceDetails(device), manager)
-            Log.d("everyOtherTime", "should replace fragment")
+            if (device.type == ScannedDevice.deviceType.BLINKY_EXAMPLE) {
+                replaceFragment(DeviceDetails(device), manager)
+            } else if (device.type == ScannedDevice.deviceType.MESH_DEVICE) {
+                replaceFragment(MeshDeviceFragment(device), manager)
+            } else {
+                Toast.makeText(binding.root.context, "wrong device selected", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
         }
         binding.favIcon.setOnClickListener {
             it as ImageView
@@ -45,10 +53,19 @@ class DeviceViewHolder(val binding: CardLayoutBinding) :
             binding.favIcon.setImageResource(R.drawable.full_heart)
         }
 
-        if (device.name == "Blinky Example") {
-            binding.cardView.setBackgroundColor(Color.parseColor("#fcba03"))
-        } else {
-            binding.cardView.setBackgroundColor(Color.parseColor("#933B3B"))
+        when (device.type) {
+            ScannedDevice.deviceType.BLINKY_EXAMPLE -> binding.cardView.setBackgroundColor(
+                Color.parseColor(
+                    "#5a42f5"
+                )
+            )
+            ScannedDevice.deviceType.MESH_DEVICE -> binding.cardView.setBackgroundColor(
+                Color.parseColor(
+                    "#fcba03"
+                )
+            )
+            ScannedDevice.deviceType.OTHER -> binding.cardView.setBackgroundColor(Color.parseColor("#933B3B"))
+            else -> {}
         }
     }
 
