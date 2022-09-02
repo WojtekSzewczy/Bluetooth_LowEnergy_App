@@ -54,35 +54,37 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
         meshDevice.connect()
         observeViewModelState()
 
-        val provisionerConfiguration = ProvisionerConfiguration()
-        provisionerConfiguration.let {
-            it.isGettingDeviceCompositionData = true
-            it.isEnablingNodeIdentity = true
-            it.isEnablingProxy = true
 
-        }
-
-
-        val provisionerConnection = ProvisionerConnection(meshDevice, MainApplication.subnet)
-
-
-
-        provisionerConnection.provision(
-            provisionerConfiguration,
-            null,
-            object : ProvisioningCallback {
-
-                override fun success(p0: ConnectableDevice?, p1: Subnet?, p2: Node?) {
-                    Log.v("succ", "succ")
-                }
-
-                override fun error(p0: ConnectableDevice, p1: Subnet, p2: ErrorType) {
-                    Log.v("error", "error")
-                }
-
-            })
         binding.provisionButton.setOnClickListener {
+            val provisionerConfiguration = ProvisionerConfiguration()
+            provisionerConfiguration.let {
+                it.isGettingDeviceCompositionData = true
+                it.isEnablingNodeIdentity = true
+                it.isEnablingProxy = true
+
+            }
+
+
+            val provisionerConnection = ProvisionerConnection(meshDevice, MainApplication.subnet)
+
+
+
+            provisionerConnection.provision(
+                provisionerConfiguration,
+                null,
+                object : ProvisioningCallback {
+
+                    override fun success(p0: ConnectableDevice?, p1: Subnet?, p2: Node?) {
+                        Log.v("succ", "succ")
+                    }
+
+                    override fun error(p0: ConnectableDevice, p1: Subnet, p2: ErrorType) {
+                        Log.v("error", "error")
+                    }
+
+                })
             Log.v(
+
                 "network",
                 BluetoothMesh.getInstance().networks.first().subnets.first().nodes.size.toString()
             )

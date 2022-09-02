@@ -6,16 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
-import com.example.ble2.MainApplication
 import com.example.ble2.R
 import com.example.ble2.databinding.FragmentHomeBinding
 import com.example.ble2.ui.adapter.DeviceAdapter
+import com.example.ble2.ui.subnets.SubnetsFragment
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
-import com.siliconlab.bluetoothmesh.adk.ErrorType
-import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
-import com.siliconlab.bluetoothmesh.adk.data_model.subnet.SubnetRemovalCallback
-import com.siliconlab.bluetoothmesh.adk.data_model.subnet.SubnetRemovalResult
 
 class Home : Fragment() {
 
@@ -54,24 +52,14 @@ class Home : Fragment() {
                 )
                 Log.v(
                     "not empty",
-                    BluetoothMesh.getInstance().networks.first().subnets.first().nodes.size.toString()
+                    BluetoothMesh.getInstance().networks.first().subnets.size.toString()
                 )
             }
                     )
         }
-        binding.sruton.setOnClickListener {
-            Log.v("node size", MainApplication.subnet.nodes.size.toString())
-            MainApplication.subnet.removeSubnet(object : SubnetRemovalCallback {
-                override fun success(p0: Subnet?) {
-                    Log.v("yeeet", "yeeeet")
-                }
+        binding.subnetButton.setOnClickListener {
+            replaceFragment()
 
-                override fun error(p0: Subnet?, p1: SubnetRemovalResult?, p2: ErrorType?) {
-                    Log.v("ełoł", p1.toString())
-
-                }
-
-            })
         }
     }
 
@@ -85,5 +73,13 @@ class Home : Fragment() {
             binding.scanButton.text =
                 if (currentState) getString(R.string.stop) else getString(R.string.scan)
         }
+    }
+
+    private fun replaceFragment() {
+
+        val manager = (view?.context as FragmentActivity).supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
+        fragmentTransaction.replace(R.id.frame_layout, SubnetsFragment())
+        fragmentTransaction.commit()
     }
 }
