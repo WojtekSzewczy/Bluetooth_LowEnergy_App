@@ -1,4 +1,4 @@
-package com.example.ble2.ui.adapter
+package com.example.ble2.ui.adapter.device
 
 import android.graphics.Color
 import android.widget.ImageView

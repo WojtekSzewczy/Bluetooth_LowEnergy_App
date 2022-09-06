@@ -12,7 +12,7 @@ import androidx.fragment.app.viewModels
 import com.example.ble2.R
 import com.example.ble2.databinding.FragmentHomeBinding
 import com.example.ble2.ui.adapter.DeviceAdapter
-import com.example.ble2.ui.subnets.SubnetsFragment
+import com.example.ble2.ui.adapter.subnet.SubnetsFragment
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
 
 class Home : Fragment() {

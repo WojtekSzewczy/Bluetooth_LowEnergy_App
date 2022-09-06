@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.CardLayoutBinding
+import com.example.ble2.ui.adapter.device.DeviceViewHolder
 
 class DeviceAdapter : ListAdapter<ScannedDevice, DeviceViewHolder>(DeviceCallback()) {
 

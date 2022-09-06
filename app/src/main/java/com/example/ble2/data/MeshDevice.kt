@@ -2,6 +2,7 @@ package com.example.ble2.data
 
 import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.ContentValues
@@ -243,7 +244,22 @@ class MeshDevice(val result: ScanResult) : ConnectableDevice() {
         val settings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .build()
-        scanner.startScan(null, settings, scanCallback)
+        val filters = ArrayList<ScanFilter>()
+        val filter = ScanFilter.Builder().setDeviceAddress(address).build()
+        filters.add(filter)
+        val refreshScanCallback = object : ScanCallback() {
+            override fun onScanResult(callbackType: Int, result: ScanResult?) {
+                result.let {
+                    if (result?.device?.address == address) {
+                        scanner.stopScan(this)
+                        scanResult = result
+                        refreshBluetoothDeviceCallback?.success()
+                    }
+                }
+            }
+        }
+
+        scanner.startScan(null, settings, refreshScanCallback)
     }
 
     override fun connect() {

@@ -18,9 +18,14 @@ import com.example.ble2.databinding.FragmentMeshDeviceBinding
 import com.example.ble2.ui.home.Home
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
 import com.siliconlab.bluetoothmesh.adk.ErrorType
+import com.siliconlab.bluetoothmesh.adk.configuration_control.CheckNodeBehaviourCallback
+import com.siliconlab.bluetoothmesh.adk.configuration_control.ConfigurationControl
+import com.siliconlab.bluetoothmesh.adk.configuration_control.FactoryResetCallback
 import com.siliconlab.bluetoothmesh.adk.connectable_device.ConnectableDevice
 import com.siliconlab.bluetoothmesh.adk.data_model.node.Node
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
+import com.siliconlab.bluetoothmesh.adk.node_control.NodeControl
+import com.siliconlab.bluetoothmesh.adk.provisioning.NodeProperties
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisionerConfiguration
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisionerConnection
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisioningCallback
@@ -30,6 +35,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
     lateinit var binding: FragmentMeshDeviceBinding
 
     private val meshDevice = MeshDevice(scannedDevice.result)
+    private var node: Node? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,36 +64,72 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
         binding.provisionButton.setOnClickListener {
             val provisionerConfiguration = ProvisionerConfiguration()
             provisionerConfiguration.let {
-                it.isGettingDeviceCompositionData = true
-                it.isEnablingNodeIdentity = true
+                //it.isGettingDeviceCompositionData = true
+                //it.isEnablingNodeIdentity = true
                 it.isEnablingProxy = true
+                it.isKeepingProxyConnection = true
 
             }
-
+            val nodeProperties = NodeProperties()
+            nodeProperties.let {
+                it.address = 5
+                it.attentionTimer = 1
+            }
 
             val provisionerConnection = ProvisionerConnection(meshDevice, MainApplication.subnet)
-
-
-
             provisionerConnection.provision(
                 provisionerConfiguration,
                 null,
                 object : ProvisioningCallback {
 
+
                     override fun success(p0: ConnectableDevice?, p1: Subnet?, p2: Node?) {
-                        Log.v("succ", "succ")
+                        node = p2;
+                        Log.v("Provisioning", "succes")
                     }
 
                     override fun error(p0: ConnectableDevice, p1: Subnet, p2: ErrorType) {
-                        Log.v("error", "error")
+                        Log.v("Provisioning", "error")
                     }
 
                 })
-            Log.v(
 
+            Log.v("Provisioning", "callback")
+            Log.v(
                 "network",
                 BluetoothMesh.getInstance().networks.first().subnets.first().nodes.size.toString()
             )
+
+        }
+        binding.unprovisonButton.setOnClickListener {
+            if (node == null) {
+                Log.v("unprovision btn", "is null")
+            }
+            val nodeControl = NodeControl(node)
+            val currentSubnet = node!!.subnets.first()
+            val configurationControl = ConfigurationControl(node)
+            configurationControl.checkProxyStatus(object : CheckNodeBehaviourCallback {
+                override fun success(p0: Node?, p1: Boolean) {
+                    Log.v("check status", p1.toString())
+                }
+
+                override fun error(p0: Node?, p1: ErrorType?) {
+                    Log.v("check status", "error")
+                }
+
+            })
+            configurationControl.factoryReset(object : FactoryResetCallback {
+                override fun success(p0: Node?) {
+                    Log.v("factory reset", "succes")
+                }
+
+                override fun error(p0: Node?, p1: ErrorType?) {
+                    Log.v("factory reset", p1!!.message)
+                }
+
+            })
+
+
         }
     }
 
