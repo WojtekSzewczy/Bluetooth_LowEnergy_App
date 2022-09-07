@@ -31,6 +31,8 @@ class MainApplication : Application() {
         lateinit var appContext: Context
         lateinit var network: com.siliconlab.bluetoothmesh.adk.data_model.network.Network
         lateinit var subnet: Subnet
+        var selectedPosition = -1;
+
     }
 
 

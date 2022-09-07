@@ -18,10 +18,11 @@ import com.example.ble2.databinding.FragmentMeshDeviceBinding
 import com.example.ble2.ui.home.Home
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
 import com.siliconlab.bluetoothmesh.adk.ErrorType
-import com.siliconlab.bluetoothmesh.adk.configuration_control.CheckNodeBehaviourCallback
 import com.siliconlab.bluetoothmesh.adk.configuration_control.ConfigurationControl
 import com.siliconlab.bluetoothmesh.adk.configuration_control.FactoryResetCallback
 import com.siliconlab.bluetoothmesh.adk.connectable_device.ConnectableDevice
+import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshBluetoothDeviceCallback
+import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshGattServicesCallback
 import com.siliconlab.bluetoothmesh.adk.data_model.node.Node
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 import com.siliconlab.bluetoothmesh.adk.node_control.NodeControl
@@ -62,10 +63,14 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
 
 
         binding.provisionButton.setOnClickListener {
+            /* if(!meshDevice.isConnected){
+                 meshDevice.connect()
+                 Thread.sleep(200)
+             }*/
             val provisionerConfiguration = ProvisionerConfiguration()
             provisionerConfiguration.let {
                 //it.isGettingDeviceCompositionData = true
-                //it.isEnablingNodeIdentity = true
+                it.isEnablingNodeIdentity = true
                 it.isEnablingProxy = true
                 it.isKeepingProxyConnection = true
 
@@ -86,6 +91,8 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                     override fun success(p0: ConnectableDevice?, p1: Subnet?, p2: Node?) {
                         node = p2;
                         Log.v("Provisioning", "succes")
+                        binding.provisionButton.visibility = View.GONE
+                        binding.unprovisonButton.visibility = View.VISIBLE
                     }
 
                     override fun error(p0: ConnectableDevice, p1: Subnet, p2: ErrorType) {
@@ -108,19 +115,35 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
             val nodeControl = NodeControl(node)
             val currentSubnet = node!!.subnets.first()
             val configurationControl = ConfigurationControl(node)
-            configurationControl.checkProxyStatus(object : CheckNodeBehaviourCallback {
-                override fun success(p0: Node?, p1: Boolean) {
-                    Log.v("check status", p1.toString())
-                }
 
-                override fun error(p0: Node?, p1: ErrorType?) {
-                    Log.v("check status", "error")
-                }
-
-            })
             configurationControl.factoryReset(object : FactoryResetCallback {
                 override fun success(p0: Node?) {
+                    p0?.removeOnlyFromLocalStructure()
+                    meshDevice.refreshGattServices(object : RefreshGattServicesCallback {
+                        override fun onSuccess() {
+                            Log.v("refresh Gatt Services", "Succes")
+                        }
+
+                        override fun onFail() {
+                            Log.v("refresh Gatt Services", "Succes")
+                        }
+
+                    })
+                    meshDevice.refreshDeviceCache()
+                    meshDevice.refreshBluetoothDevice(object : RefreshBluetoothDeviceCallback {
+                        override fun success() {
+                            Log.v("refresh", "succes")
+                        }
+
+                        override fun failure() {
+                            Log.v("refresh", "failure")
+                        }
+
+                    })
                     Log.v("factory reset", "succes")
+                    binding.unprovisonButton.visibility = View.GONE
+                    binding.connectButton.visibility = View.VISIBLE
+
                 }
 
                 override fun error(p0: Node?, p1: ErrorType?) {
@@ -130,6 +153,12 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
             })
 
 
+        }
+        binding.connectButton.setOnClickListener {
+            meshDevice.connect()
+            Thread.sleep(500)
+            binding.provisionButton.visibility = View.VISIBLE
+            binding.connectButton.visibility = View.GONE
         }
     }
 
