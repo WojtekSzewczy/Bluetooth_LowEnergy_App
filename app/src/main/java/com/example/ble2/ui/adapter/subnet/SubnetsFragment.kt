@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
+import com.example.ble2.AddSubnetDialog
 import com.example.ble2.MainApplication
 import com.example.ble2.R
 import com.example.ble2.databinding.FragmentSubnetsBinding
@@ -28,7 +29,7 @@ class SubnetsFragment : Fragment() {
 
 
     private lateinit var binding: FragmentSubnetsBinding
-
+    val viewModel = SubnetsViewModel()
     val adapter = SubnetsAdapter()
 
     override fun onCreateView(
@@ -53,13 +54,35 @@ class SubnetsFragment : Fragment() {
         val network = BluetoothMesh.getInstance().getNetwork(MainApplication.network.uuid)
         var subnetsList = network.subnets.distinct()
         var subnetsCount = subnetsList.size
-        val viewModel = SubnetsViewModel()
+
         adapter.getViewModel(viewModel)
 
         viewModel.currentPostion.observe(viewLifecycleOwner) {
             Log.v("click", it.toString())
             MainApplication.selectedPosition = it
             adapter.notifyDataSetChanged()
+        }
+
+        viewModel.currentName.observe(viewLifecycleOwner) {
+            if (it != "") {
+                if (network.canCreateSubnet()) {
+                    MainApplication.subnet = network.createSubnet(it)
+                    subnetsList = network.subnets.distinct()
+                    subnetsCount = subnetsList.size
+                    adapter.submitList(subnetsList)
+
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "can't create subnet",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+
+            }
+
+
         }
         binding.subnetsList.adapter = adapter
         adapter.submitList(subnetsList)
@@ -73,19 +96,7 @@ class SubnetsFragment : Fragment() {
 
         binding.addSubnet.setOnClickListener {
             Log.v("subnets", network.subnets.size.toString())
-            if (network.canCreateSubnet()) {
-                MainApplication.subnet =
-                    network.createSubnet(binding.subnetName.text.toString())
-
-                subnetsList = network.subnets.distinct()
-                subnetsCount = subnetsList.size
-                binding.subnetName.setText("")
-                adapter.submitList(subnetsList)
-
-            } else {
-                Toast.makeText(requireContext(), "no powodzenia wariacie XDDDD", Toast.LENGTH_SHORT)
-                    .show()
-            }
+            openDialog(viewModel)
 
         }
 
@@ -96,6 +107,7 @@ class SubnetsFragment : Fragment() {
                 Toast.makeText(requireContext(), "no powodzenia wariacie XDDDD", Toast.LENGTH_SHORT)
                     .show()
             } else {
+                Log.v("removesubnet", "else")
                 subnetsList[MainApplication.selectedPosition].nodes.forEach {
                     Log.v("remove node ", "removin da node")
                     val configurationControl = ConfigurationControl(it)
@@ -117,9 +129,7 @@ class SubnetsFragment : Fragment() {
                                     p2: ErrorType?
                                 ) {
                                     Log.v("removeSubnet", "error")
-                                    /*
-                                        Toast.makeText(requireContext(),subnetsList[MainApplication.selectedPosition].name+ " failed to remove subnet",Toast.LENGTH_SHORT).show()
-                                    */
+
                                 }
                             })
 
@@ -143,9 +153,7 @@ class SubnetsFragment : Fragment() {
                                     p2: ErrorType?
                                 ) {
                                     Log.v("removeSubnet", "error")
-                                    /*
-                                        Toast.makeText(requireContext(),subnetsList[MainApplication.selectedPosition].name+ " failed to remove subnet",Toast.LENGTH_SHORT).show()
-                                    */
+
                                 }
                             })
                             Log.v("factory reset", "error")
@@ -160,13 +168,13 @@ class SubnetsFragment : Fragment() {
                             subnetsList = network.subnets.distinct()
                             subnetsCount = subnetsList.size
                             adapter.submitList(subnetsList)
+                            viewModel.setPostion(-1)
+
                         }
 
                         override fun error(p0: Subnet?, p1: SubnetRemovalResult?, p2: ErrorType?) {
                             Log.v("removeSubnet", "error")
-                            /*
-                                    Toast.makeText(requireContext(),subnetsList[MainApplication.selectedPosition].name+ " failed to remove subnet",Toast.LENGTH_SHORT).show()
-                                */
+
                         }
                     })
                 }
@@ -174,13 +182,16 @@ class SubnetsFragment : Fragment() {
 
             }
 
-            /*Thread.slep(5000)
-
-            if((subnetsCount-1)==viewModel.currentPostion.value){
-                Log.v("ten if co nie pamietam po co go dałem", "tak to on")
-                viewModel.setPostion(-1)
-            }*/
+            adapter.notifyDataSetChanged()
         }
+
+
+    }
+
+    private fun openDialog(viewModel: SubnetsViewModel) {
+        val addSubnetDialog = AddSubnetDialog(viewModel)
+        addSubnetDialog.show(parentFragmentManager, "tag")
+        viewModel.setName(addSubnetDialog.subnetName)
 
 
     }

@@ -63,10 +63,6 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
 
 
         binding.provisionButton.setOnClickListener {
-            /* if(!meshDevice.isConnected){
-                 meshDevice.connect()
-                 Thread.sleep(200)
-             }*/
             val provisionerConfiguration = ProvisionerConfiguration()
             provisionerConfiguration.let {
                 //it.isGettingDeviceCompositionData = true
@@ -90,9 +86,11 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
 
                     override fun success(p0: ConnectableDevice?, p1: Subnet?, p2: Node?) {
                         node = p2;
+                        node?.name = meshDevice.address
                         Log.v("Provisioning", "succes")
                         binding.provisionButton.visibility = View.GONE
                         binding.unprovisonButton.visibility = View.VISIBLE
+                        Log.v("elements", node?.elements?.first()?.address.toString())
                     }
 
                     override fun error(p0: ConnectableDevice, p1: Subnet, p2: ErrorType) {

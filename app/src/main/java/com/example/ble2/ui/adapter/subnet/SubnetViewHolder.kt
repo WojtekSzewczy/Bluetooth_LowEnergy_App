@@ -7,9 +7,22 @@ import com.example.ble2.databinding.SubnetLayoutBinding
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class SubnetViewHolder(val binding: SubnetLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+
     lateinit var SubnetViewModel: SubnetsViewModel
     fun bind(subnet: Subnet) {
+        Log.v("node name", subnet.name)
+        var nodesAdresses: String = ""
+
         binding.subnetName.text = subnet.name
+        if (!subnet.nodes.isEmpty()) {
+            subnet.nodes.forEach {
+                nodesAdresses += it.name + "\n"
+            }
+
+        } else {
+            nodesAdresses = ""
+        }
+        binding.nodesCount.text = nodesAdresses
         binding.removeSubnet.setOnClickListener {
 
 
@@ -21,6 +34,7 @@ class SubnetViewHolder(val binding: SubnetLayoutBinding) : RecyclerView.ViewHold
 
         }
     }
+
 
     fun getViewModel(viewModel: SubnetsViewModel) {
         SubnetViewModel = viewModel

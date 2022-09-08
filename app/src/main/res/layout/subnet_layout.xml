@@ -32,6 +32,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_close_24" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintStart_toEndOf="@id/subnet_name"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/nodes_count" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
