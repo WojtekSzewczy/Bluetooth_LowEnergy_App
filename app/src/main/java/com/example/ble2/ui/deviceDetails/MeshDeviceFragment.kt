@@ -1,4 +1,4 @@
-package com.example.ble2.ui.details
+package com.example.ble2.ui.deviceDetails
 
 import android.os.Bundle
 import android.util.Log
@@ -25,7 +25,6 @@ import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshBluetoothDevic
 import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshGattServicesCallback
 import com.siliconlab.bluetoothmesh.adk.data_model.node.Node
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
-import com.siliconlab.bluetoothmesh.adk.node_control.NodeControl
 import com.siliconlab.bluetoothmesh.adk.provisioning.NodeProperties
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisionerConfiguration
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisionerConnection
@@ -65,7 +64,6 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
         binding.provisionButton.setOnClickListener {
             val provisionerConfiguration = ProvisionerConfiguration()
             provisionerConfiguration.let {
-                //it.isGettingDeviceCompositionData = true
                 it.isEnablingNodeIdentity = true
                 it.isEnablingProxy = true
                 it.isKeepingProxyConnection = true
@@ -77,8 +75,9 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                 it.attentionTimer = 1
             }
 
-            val provisionerConnection = ProvisionerConnection(meshDevice, MainApplication.subnet)
-            provisionerConnection.provision(
+            val provisionerConnection =
+                MainApplication.subnet?.let { it1 -> ProvisionerConnection(meshDevice, it1) }
+            provisionerConnection?.provision(
                 provisionerConfiguration,
                 null,
                 object : ProvisioningCallback {
@@ -106,14 +105,18 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
             )
 
         }
+        if (MainApplication.subnet != null) {
+            binding.subnetNameTextView.text = MainApplication.subnet?.name
+        } else {
+            binding.subnetNameTextView.text = "select subnet"
+            binding.provisionButton.visibility = View.GONE
+        }
+
         binding.unprovisonButton.setOnClickListener {
             if (node == null) {
                 Log.v("unprovision btn", "is null")
             }
-            val nodeControl = NodeControl(node)
-            val currentSubnet = node!!.subnets.first()
             val configurationControl = ConfigurationControl(node)
-
             configurationControl.factoryReset(object : FactoryResetCallback {
                 override fun success(p0: Node?) {
                     p0?.removeOnlyFromLocalStructure()
@@ -139,6 +142,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
 
                     })
                     Log.v("factory reset", "succes")
+                    meshDevice.disconnect()
                     binding.unprovisonButton.visibility = View.GONE
                     binding.connectButton.visibility = View.VISIBLE
 
@@ -166,7 +170,12 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                 Services.ReadyState.READY -> {
                     Thread.sleep(200)
                     binding.progressBar.visibility = View.GONE
-                    binding.provisionButton.visibility = View.VISIBLE
+                    if (MainApplication.subnet == null) {
+                        binding.provisionButton.visibility = View.GONE
+
+                    } else {
+                        binding.provisionButton.visibility = View.VISIBLE
+                    }
                 }
                 Services.ReadyState.NOT_READY -> {
                     replaceFragment()

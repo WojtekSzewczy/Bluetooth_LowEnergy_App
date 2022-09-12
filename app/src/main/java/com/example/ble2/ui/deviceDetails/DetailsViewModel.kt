@@ -1,4 +1,4 @@
-package com.example.ble2.ui.details
+package com.example.ble2.ui.deviceDetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,7 @@ import com.example.ble2.Services
 
 class DetailsViewModel : ViewModel() {
 
-    //val buttonStateList = Services.buttonStateListLiveData
+
     val isReady = Services.isReady
 
     private val _areServicesVisible = MutableLiveData(true)

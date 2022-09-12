@@ -109,11 +109,6 @@ class MeshDevice(val result: ScanResult) : ConnectableDevice() {
         }
     }
 
-    enum class ReadyState {
-        UNDEFINED,
-        READY,
-        NOT_READY
-    }
 
     override fun onConnected() {
         super.onConnected()

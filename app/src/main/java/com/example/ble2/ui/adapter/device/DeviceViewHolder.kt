@@ -13,8 +13,8 @@ import com.example.ble2.Services
 import com.example.ble2.data.FavouritedDevices
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.CardLayoutBinding
-import com.example.ble2.ui.details.DeviceDetails
-import com.example.ble2.ui.details.MeshDeviceFragment
+import com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails
+import com.example.ble2.ui.deviceDetails.MeshDeviceFragment
 
 class DeviceViewHolder(val binding: CardLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -24,7 +24,7 @@ class DeviceViewHolder(val binding: CardLayoutBinding) :
             val manager = (itemView.context as FragmentActivity).supportFragmentManager
             Services.stopBleScan()
             if (device.type == ScannedDevice.deviceType.BLINKY_EXAMPLE) {
-                replaceFragment(DeviceDetails(device), manager)
+                replaceFragment(BlinkyDeviceDetails(device), manager)
             } else if (device.type == ScannedDevice.deviceType.MESH_DEVICE) {
                 replaceFragment(MeshDeviceFragment(device), manager)
             } else {

@@ -1,6 +1,5 @@
 package com.example.ble2.ui.adapter.subnet
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetLayoutBinding
@@ -10,13 +9,17 @@ class SubnetViewHolder(val binding: SubnetLayoutBinding) : RecyclerView.ViewHold
 
     lateinit var SubnetViewModel: SubnetsViewModel
     fun bind(subnet: Subnet) {
-        Log.v("node name", subnet.name)
-        var nodesAdresses: String = ""
+        var nodesAdresses = ""
 
         binding.subnetName.text = subnet.name
         if (!subnet.nodes.isEmpty()) {
             subnet.nodes.forEach {
-                nodesAdresses += it.name + "\n"
+                if (it.name == null) {
+                    nodesAdresses += ""
+                } else {
+                    nodesAdresses += it.name + "\n"
+                }
+
             }
 
         } else {
@@ -29,7 +32,6 @@ class SubnetViewHolder(val binding: SubnetLayoutBinding) : RecyclerView.ViewHold
         }
         binding.cardView.setOnClickListener {
             SubnetViewModel.setPostion(adapterPosition)
-            Log.v("asdasd", adapterPosition.toString())
             MainApplication.subnet = subnet
 
         }

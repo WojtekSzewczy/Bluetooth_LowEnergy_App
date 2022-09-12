@@ -30,7 +30,7 @@ class MainApplication : Application() {
     companion object {
         lateinit var appContext: Context
         lateinit var network: com.siliconlab.bluetoothmesh.adk.data_model.network.Network
-        lateinit var subnet: Subnet
+        var subnet: Subnet? = null
         var selectedPosition = -1;
 
     }

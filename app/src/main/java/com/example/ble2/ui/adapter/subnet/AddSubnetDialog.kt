@@ -1,4 +1,4 @@
-package com.example.ble2
+package com.example.ble2.ui.adapter.subnet
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.ble2.databinding.LayoutDialogBinding
-import com.example.ble2.ui.adapter.subnet.SubnetsViewModel
 
 class AddSubnetDialog(val viewModel: SubnetsViewModel) : AppCompatDialogFragment() {
     private lateinit var bindig: LayoutDialogBinding

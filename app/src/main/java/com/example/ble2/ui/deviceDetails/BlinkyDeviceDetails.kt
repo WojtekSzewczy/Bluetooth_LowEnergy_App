@@ -1,4 +1,4 @@
-package com.example.ble2.ui.details
+package com.example.ble2.ui.deviceDetails
 
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +17,7 @@ import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentDeviceDetailsBinding
 import com.example.ble2.ui.home.Home
 
-class DeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
+class BlinkyDeviceDetails(scannedDevice: ScannedDevice) : Fragment() {
 
     lateinit var binding: FragmentDeviceDetailsBinding
     private val viewModel: DetailsViewModel by viewModels()

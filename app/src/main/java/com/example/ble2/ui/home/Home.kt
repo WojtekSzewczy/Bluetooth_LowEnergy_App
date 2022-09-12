@@ -56,8 +56,8 @@ class Home : Fragment() {
                     BluetoothMesh.getInstance().networks.first().subnets.size.toString()
                 )
             }
-            Log.v("subnet", MainApplication.subnet.name.toString())
-            Log.v("subnet nodes", MainApplication.subnet.nodes.toString())
+            Log.v("subnet", MainApplication.subnet?.name.toString())
+            Log.v("subnet nodes", MainApplication.subnet?.nodes.toString())
 
         }
         binding.subnetButton.setOnClickListener {

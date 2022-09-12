@@ -9,7 +9,7 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    tools:context=".ui.details.DeviceDetails">
+    tools:context=".ui.deviceDetails.BlinkyDeviceDetails">
 
     <ProgressBar
         android:id="@+id/progressBar"

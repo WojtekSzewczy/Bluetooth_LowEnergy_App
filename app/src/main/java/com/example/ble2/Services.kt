@@ -1,6 +1,6 @@
 package com.example.ble2
 
-import android.bluetooth.*
+import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
@@ -12,7 +12,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.ble2.data.BlinkyDevice
 import com.example.ble2.data.ScannedDevice
-import java.util.*
 
 object Services {
 
@@ -103,94 +102,6 @@ object Services {
         currentScannedDevices[device.address] = device
         updateScannedDevices()
     }
-
-    val mGattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-            when (newState) {
-                BluetoothAdapter.STATE_CONNECTED -> {
-                    currentBlinkyDevice?.bluetoothGatt = gatt
-                    Log.d("connection", "connected")
-                    if (currentBlinkyDevice?.deviceType == ScannedDevice.deviceType.MESH_DEVICE || currentBlinkyDevice?.deviceType == ScannedDevice.deviceType.BLINKY_EXAMPLE) {
-                        Log.d("connection", "is corect device")
-                        gatt.discoverServices()
-                    } else {
-                        gatt.disconnect()
-                    }
-
-                }
-                BluetoothAdapter.STATE_DISCONNECTED -> {
-                    Log.d("connection", "disconnected")
-                    _isReady.postValue(ReadyState.NOT_READY)
-                    gatt.close()
-                }
-            }
-        }
-
-        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            val characteristic2 = gatt.services[3].characteristics[1]
-            Log.v("before", "setNotification")
-            gatt.setCharacteristicNotification(characteristic2, true)
-            val descriptor =
-                characteristic2.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"))
-            descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-            gatt.writeDescriptor(descriptor)
-            Log.v("after", "setNotification")
-            currentBlinkyDevice?.DiodeCharacteristic = gatt.services[3].characteristics[0]
-            currentBlinkyDevice?.ButtonCharacteristic = gatt.services[3].characteristics[1]
-            _isReady.postValue(ReadyState.READY)
-
-        }
-
-        override fun onCharacteristicRead(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic,
-            status: Int
-        ) {
-            when (characteristic) {
-                gatt.services[3].characteristics[0] -> {
-                    currentBlinkyDevice?.setDiodeState(characteristic.value.contentToString())
-                }
-                gatt.services[3].characteristics[1] -> {
-                    currentBlinkyDevice?.setButtonState(characteristic.value.contentToString())
-                }
-            }
-        }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic
-        ) {
-            if (characteristic == gatt.services[3].characteristics[1]) {
-                currentBlinkyDevice?.togleButtonState()
-            }
-        }
-    }
-
-    fun connect(device: BlinkyDevice) {
-        currentBlinkyDevice = device
-        currentBlinkyDevice!!.result.device.connectGatt(
-            MainApplication.appContext,
-            false,
-            mGattCallback
-        )
-    }
-
-    fun disconnectWithDevice() {
-        currentBlinkyDevice?.bluetoothGatt?.disconnect()
-    }
-
-    fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
-        Log.v("readCharacteristic", "fromCallback")
-
-        currentBlinkyDevice?.bluetoothGatt?.readCharacteristic(characteristic)
-
-    }
-
-    fun writeDiode(signalOn: ByteArray) {
-        currentBlinkyDevice?.DiodeCharacteristic?.value = signalOn
-        currentBlinkyDevice?.bluetoothGatt?.writeCharacteristic(currentBlinkyDevice!!.DiodeCharacteristic)
-    }
-
     fun clearData() {
         currentBlinkyDevice = null
         _isReady.value = ReadyState.UNDEFINED

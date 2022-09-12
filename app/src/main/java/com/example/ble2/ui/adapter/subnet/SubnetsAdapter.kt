@@ -14,15 +14,15 @@ class SubnetsAdapter :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): com.example.ble2.ui.adapter.subnet.SubnetViewHolder {
+    ): SubnetViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = SubnetLayoutBinding.inflate(inflater, parent, false)
-        return com.example.ble2.ui.adapter.subnet.SubnetViewHolder(binding)
+        return SubnetViewHolder(binding)
     }
 
 
     override fun onBindViewHolder(
-        holder: com.example.ble2.ui.adapter.subnet.SubnetViewHolder,
+        holder: SubnetViewHolder,
         position: Int
     ) {
 

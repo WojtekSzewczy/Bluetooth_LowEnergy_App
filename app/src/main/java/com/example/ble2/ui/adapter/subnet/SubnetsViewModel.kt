@@ -1,6 +1,5 @@
 package com.example.ble2.ui.adapter.subnet
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -17,7 +16,6 @@ class SubnetsViewModel {
     }
 
     fun setPostion(postion: Int) {
-        Log.v("set position", postion.toString())
         _currentPostion.value = postion
     }
 }
