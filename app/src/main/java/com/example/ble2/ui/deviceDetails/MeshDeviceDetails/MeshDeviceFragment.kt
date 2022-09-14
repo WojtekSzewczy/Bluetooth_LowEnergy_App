@@ -1,4 +1,4 @@
-package com.example.ble2.ui.deviceDetails
+package com.example.ble2.ui.deviceDetails.MeshDeviceDetails
 
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +15,8 @@ import com.example.ble2.Services
 import com.example.ble2.data.MeshDevice
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentMeshDeviceBinding
+import com.example.ble2.ui.adapter.subnet.SubnetsAdapterForMesh
+import com.example.ble2.ui.adapter.subnet.SubnetsViewModel
 import com.example.ble2.ui.home.Home
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
 import com.siliconlab.bluetoothmesh.adk.ErrorType
@@ -36,6 +38,9 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
 
     private val meshDevice = MeshDevice(scannedDevice.result)
     private var node: Node? = null
+    val adapter = SubnetsAdapterForMesh()
+    val list = MainApplication.subnetList
+    val viewModel = SubnetsViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +63,10 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         meshDevice.connect()
+        adapter.submitList(list)
+        adapter.getViewModel(viewModel)
+        binding.subnetsList.adapter = adapter
+
         observeViewModelState()
 
 
@@ -105,12 +114,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
             )
 
         }
-        if (MainApplication.subnet != null) {
-            binding.subnetNameTextView.text = MainApplication.subnet?.name
-        } else {
-            binding.subnetNameTextView.text = "select subnet"
-            binding.provisionButton.visibility = View.GONE
-        }
+
 
         binding.unprovisonButton.setOnClickListener {
             if (node == null) {
@@ -165,17 +169,17 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
     }
 
     private fun observeViewModelState() {
+        viewModel.currentPostion.observe(viewLifecycleOwner) {
+            MainApplication.selectedPosition = it
+            adapter.notifyDataSetChanged()
+        }
         meshDevice.isReady.observe(viewLifecycleOwner) {
             when (it) {
                 Services.ReadyState.READY -> {
                     Thread.sleep(200)
                     binding.progressBar.visibility = View.GONE
-                    if (MainApplication.subnet == null) {
-                        binding.provisionButton.visibility = View.GONE
+                    binding.provisionButton.visibility = View.VISIBLE
 
-                    } else {
-                        binding.provisionButton.visibility = View.VISIBLE
-                    }
                 }
                 Services.ReadyState.NOT_READY -> {
                     replaceFragment()

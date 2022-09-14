@@ -1,4 +1,4 @@
-package com.example.ble2.ui.deviceDetails
+package com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails
 
 import android.os.Bundle
 import android.util.Log

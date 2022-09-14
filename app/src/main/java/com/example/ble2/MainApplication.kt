@@ -3,6 +3,8 @@ package com.example.ble2
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.example.ble2.ui.adapter.subnet.SubnetsAdapterForMesh
+import com.example.ble2.ui.adapter.subnet.SubnetsViewModel
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
 import com.siliconlab.bluetoothmesh.adk.configuration.BluetoothMeshConfiguration
 import com.siliconlab.bluetoothmesh.adk.configuration.BluetoothMeshConfigurationLimits
@@ -23,6 +25,9 @@ class MainApplication : Application() {
             network = BluetoothMesh.getInstance().networks.first()
         }
         Log.v("networkOnCreate", network.subnets.size.toString())
+        subnetList = network.subnets.distinct()
+        adapter.getViewModel(viewModel)
+        adapter.submitList(subnetList)
 
 
     }
@@ -31,7 +36,10 @@ class MainApplication : Application() {
         lateinit var appContext: Context
         lateinit var network: com.siliconlab.bluetoothmesh.adk.data_model.network.Network
         var subnet: Subnet? = null
+        var subnetList: List<Subnet> = emptyList()
         var selectedPosition = -1;
+        val adapter = SubnetsAdapterForMesh()
+        val viewModel = SubnetsViewModel()
 
     }
 

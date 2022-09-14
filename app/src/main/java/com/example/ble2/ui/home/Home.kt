@@ -64,7 +64,12 @@ class Home : Fragment() {
             replaceFragment()
 
         }
+        binding.swipeToRefresh.setOnRefreshListener {
+            binding.scanButton.performClick()
+            binding.swipeToRefresh.isRefreshing = false
+        }
     }
+
 
     private fun observeViewModelState(adapter: DeviceAdapter) {
         viewModel.devices.observe(viewLifecycleOwner) { devices ->
@@ -85,4 +90,7 @@ class Home : Fragment() {
         fragmentTransaction.replace(R.id.frame_layout, SubnetsFragment())
         fragmentTransaction.commit()
     }
+
+
 }
+

@@ -1,14 +1,16 @@
 package com.example.ble2.ui.adapter.subnet
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetLayoutBinding
+import com.example.ble2.ui.deviceDetails.MeshDeviceDetails.SubnetViewHolder
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
-class SubnetsAdapter :
+class SubnetsAdapterForMesh :
     androidx.recyclerview.widget.ListAdapter<Subnet, SubnetViewHolder>(SubnetCallback()) {
     lateinit var subnetViewModel: SubnetsViewModel
     override fun onCreateViewHolder(
@@ -29,10 +31,13 @@ class SubnetsAdapter :
         val subnet = getItem(position)
         holder.bind(subnet)
         holder.getViewModel(subnetViewModel)
-        if (MainApplication.selectedPosition == position)
+        if (MainApplication.selectedPosition == position) {
+            Log.v("clicked", "white")
             holder.itemView.setBackgroundColor(Color.parseColor("#000000"))
-        else
+        } else {
+            Log.v("clicked", "black")
             holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"))
+        }
     }
 
     fun getViewModel(viewModel: SubnetsViewModel) {

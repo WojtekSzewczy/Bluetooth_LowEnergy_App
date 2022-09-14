@@ -13,8 +13,8 @@ import com.example.ble2.Services
 import com.example.ble2.data.FavouritedDevices
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.CardLayoutBinding
-import com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails
-import com.example.ble2.ui.deviceDetails.MeshDeviceFragment
+import com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails.BlinkyDeviceDetails
+import com.example.ble2.ui.deviceDetails.MeshDeviceDetails.MeshDeviceFragment
 
 class DeviceViewHolder(val binding: CardLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {

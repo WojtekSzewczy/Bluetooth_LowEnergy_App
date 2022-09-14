@@ -10,7 +10,7 @@ import com.example.ble2.databinding.LayoutDialogBinding
 
 class AddSubnetDialog(val viewModel: SubnetsViewModel) : AppCompatDialogFragment() {
     private lateinit var bindig: LayoutDialogBinding
-    var subnetName = ""
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 

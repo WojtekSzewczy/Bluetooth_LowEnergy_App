@@ -1,4 +1,4 @@
-package com.example.ble2.ui.deviceDetails
+package com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

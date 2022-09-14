@@ -20,26 +20,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/remove_subnet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="remove subnet"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_subnet" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/subnets_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/remove_subnet"
-        tools:listitem="@layout/subnet_layout"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/subnets_list"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="30dp"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/add_subnet"
+           tools:listitem="@layout/subnet_layout"
+           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <Button
         android:id="@+id/test_btn"
