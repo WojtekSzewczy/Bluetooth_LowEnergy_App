@@ -1,5 +1,6 @@
 package com.example.ble2.ui.adapter.subnet
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -21,18 +22,19 @@ class SubnetManagementViewHolder(val binding: SubnetManageLayoutBinding) :
 
         binding.subnetName.text = subnet.name
         if (!subnet.nodes.isEmpty()) {
+            Log.v("are ndoes empty", "true")
             subnet.nodes.forEach {
-                if (it.name == null) {
-                    nodesAdresses += ""
+                nodesAdresses += if (it.name == null) {
+                    it.removeOnlyFromLocalStructure()
+                    subnet.nodes.size.toString()
                 } else {
-                    nodesAdresses += it.name + "\n"
+                    it.name + "\n"
                 }
-
             }
-
         } else {
-            nodesAdresses = ""
+            nodesAdresses = subnet.nodes.size.toString()
         }
+
         binding.nodesCount.text = nodesAdresses
 
         binding.cardView.setOnClickListener {

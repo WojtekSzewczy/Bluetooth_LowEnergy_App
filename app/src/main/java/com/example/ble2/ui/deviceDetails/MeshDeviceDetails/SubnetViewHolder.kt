@@ -29,10 +29,7 @@ class SubnetViewHolder(val binding: SubnetLayoutBinding) : RecyclerView.ViewHold
             nodesAdresses = ""
         }
         binding.nodesCount.text = nodesAdresses
-        binding.removeSubnet.setOnClickListener {
 
-
-        }
         if (MainApplication.selectedPosition == adapterPosition) {
             binding.subnetName.setTextColor(Color.parseColor("#FFFFFF"))
         } else {

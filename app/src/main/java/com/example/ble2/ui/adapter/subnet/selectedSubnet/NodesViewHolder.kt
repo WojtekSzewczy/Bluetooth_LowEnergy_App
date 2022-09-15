@@ -21,7 +21,6 @@ class NodesViewHolder(
         binding.removeSubnet.setOnClickListener {
             binding.progressBarRemoving.visibility = View.VISIBLE
             val configurationControl = ConfigurationControl(node)
-
             configurationControl.factoryReset(object : FactoryResetCallback {
                 override fun success(p0: Node?) {
                     removeNode(p0)
@@ -41,12 +40,9 @@ class NodesViewHolder(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
-
             })
-
         }
-
+        binding.nodeName.text = node.name.toString()
     }
 
     private fun removeNode(p0: Node?) {

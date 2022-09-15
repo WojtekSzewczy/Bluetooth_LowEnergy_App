@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
+import com.example.ble2.AppState
 import com.example.ble2.MainApplication
 import com.example.ble2.R
 import com.example.ble2.Services
@@ -39,7 +40,6 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
     private val meshDevice = MeshDevice(scannedDevice.result)
     private var node: Node? = null
     val adapter = SubnetsAdapterForMesh()
-    val list = MainApplication.subnetList
     val viewModel = SubnetsViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +63,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         meshDevice.connect()
-        adapter.submitList(list)
+        adapter.submitList(AppState.network.subnets.toList())
         adapter.getViewModel(viewModel)
         binding.subnetsList.adapter = adapter
 
@@ -202,7 +202,5 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         Services.clearData()
-
-
     }
 }

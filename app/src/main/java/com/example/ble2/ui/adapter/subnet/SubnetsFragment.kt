@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
+import com.example.ble2.AppState
 import com.example.ble2.MainApplication
 import com.example.ble2.R
 import com.example.ble2.databinding.FragmentSubnetsBinding
@@ -18,8 +19,6 @@ import com.example.ble2.ui.home.Home
 
 class SubnetsFragment : Fragment() {
     private lateinit var binding: FragmentSubnetsBinding
-    val network = MainApplication.network
-    var subnetsCount = MainApplication.subnetList.size
     val adapter = SubnetAdapter()
     val viewModel = SubnetsViewModel()
 
@@ -49,83 +48,16 @@ class SubnetsFragment : Fragment() {
 
         observeViewModel()
         binding.testBtn.setOnClickListener {
-            Log.v("subnets count", network.subnets.size.toString())
+            Log.v("subnets count", AppState.network.subnets.size.toString())
 
         }
 
 
         binding.addSubnet.setOnClickListener {
-            Log.v("subnets", network.subnets.size.toString())
+            Log.v("subnets", AppState.network.subnets.size.toString())
             openDialog()
 
         }
-
-        /*   binding.removeSubnet.setOnClickListener {
-               if (subnetsCount - 1 < 0 || viewModel.currentPostion.value == -1) {
-                   Toast.makeText(requireContext(), "can't remove subnet", Toast.LENGTH_SHORT)
-                       .show()
-               } else {
-                   MainApplication.subnetList[MainApplication.selectedPosition].nodes.forEach {
-                       val configurationControl = ConfigurationControl(it)
-
-                       configurationControl.factoryReset(object : FactoryResetCallback {
-                           override fun success(p0: Node?) {
-                               p0?.removeOnlyFromLocalStructure()
-                               MainApplication.subnetList[MainApplication.selectedPosition].removeSubnet(object :
-                                   SubnetRemovalCallback {
-
-                                   override fun success(p0: Subnet?) {
-                                       resetSubnet()
-                                   }
-                                   override fun error(
-                                       p0: Subnet?,
-                                       p1: SubnetRemovalResult?,
-                                       p2: ErrorType?
-                                   ) {
-
-                                   }
-                               })
-                           }
-
-                           override fun error(p0: Node?, p1: ErrorType?) {
-                               p0?.removeOnlyFromLocalStructure()
-                               MainApplication.subnetList[MainApplication.selectedPosition].removeSubnet(object :
-                                   SubnetRemovalCallback {
-                                   override fun success(p0: Subnet?) {
-                                       resetSubnet()
-                                   }
-
-                                   override fun error(
-                                       p0: Subnet?,
-                                       p1: SubnetRemovalResult?,
-                                       p2: ErrorType?
-                                   ) {
-
-                                   }
-                               })
-                           }
-
-                       })
-                   }
-                   if (viewModel.currentPostion.value != -1) {
-                       MainApplication.subnetList[MainApplication.selectedPosition].removeSubnet(object :
-                           SubnetRemovalCallback {
-                           override fun success(p0: Subnet?) {
-                               resetSubnet()
-                           }
-
-                           override fun error(p0: Subnet?, p1: SubnetRemovalResult?, p2: ErrorType?) {
-                           }
-                       })
-                   }
-
-
-               }
-
-               adapter.notifyDataSetChanged()
-           }*/
-
-
     }
 
     private fun observeViewModel() {
@@ -137,8 +69,8 @@ class SubnetsFragment : Fragment() {
         viewModel.currentName.observe(viewLifecycleOwner) {
             Log.v("currentName", it.toString())
             if (it != "") {
-                if (network.canCreateSubnet()) {
-                    MainApplication.subnet = network.createSubnet(it)
+                if (AppState.network.canCreateSubnet()) {
+                    MainApplication.subnet = AppState.network.createSubnet(it)
                     submitNewList()
 
                 } else {
@@ -156,9 +88,7 @@ class SubnetsFragment : Fragment() {
 
     private fun submitNewList() {
         Log.v("submitNewList", "submitNewList")
-        MainApplication.subnetList = network.subnets.distinct()
-        subnetsCount = MainApplication.subnetList.size
-        adapter.submitList(MainApplication.subnetList)
+        adapter.submitList(AppState.network.subnets.toList())
     }
 
     private fun resetSubnet() {
