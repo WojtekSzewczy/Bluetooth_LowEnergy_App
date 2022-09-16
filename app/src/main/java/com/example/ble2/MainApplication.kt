@@ -2,7 +2,6 @@ package com.example.ble2
 
 import android.app.Application
 import android.content.Context
-import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class MainApplication : Application() {
 
@@ -13,11 +12,6 @@ class MainApplication : Application() {
 
     companion object {
         lateinit var appContext: Context
-        var subnet: Subnet? = null
-        var selectedPosition = -1
-
-
+        var selectedPosition = -1 //TODO move to proper class
     }
-
-
 }

@@ -70,7 +70,7 @@ class SubnetsFragment : Fragment() {
             Log.v("currentName", it.toString())
             if (it != "") {
                 if (AppState.network.canCreateSubnet()) {
-                    MainApplication.subnet = AppState.network.createSubnet(it)
+                    AppState.currentSubnet = AppState.network.createSubnet(it)
                     submitNewList()
 
                 } else {
@@ -87,23 +87,13 @@ class SubnetsFragment : Fragment() {
     }
 
     private fun submitNewList() {
-        Log.v("submitNewList", "submitNewList")
         adapter.submitList(AppState.network.subnets.toList())
-    }
-
-    private fun resetSubnet() {
-        Log.v("resetSubnet", "resetSubnet")
-        submitNewList()
-        viewModel.setPostion(-1)
-        MainApplication.subnet = null
     }
 
     private fun openDialog() {
         Log.v("dialog", "nooo")
         val addSubnetDialog = AddSubnetDialog(viewModel)
         addSubnetDialog.show(parentFragmentManager, "tag")
-
-
     }
 
     private fun replaceFragment() {
@@ -113,6 +103,4 @@ class SubnetsFragment : Fragment() {
         fragmentTransaction.replace(R.id.frame_layout, Home())
         fragmentTransaction.commit()
     }
-
-
 }

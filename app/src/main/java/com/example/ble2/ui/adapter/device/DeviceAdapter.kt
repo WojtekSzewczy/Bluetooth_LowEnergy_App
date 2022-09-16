@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.ble2.data.ScannedDevice
-import com.example.ble2.databinding.CardLayoutBinding
+import com.example.ble2.databinding.ScannedDeviceLayoutBinding
 import com.example.ble2.ui.adapter.device.DeviceViewHolder
 
 class DeviceAdapter : ListAdapter<ScannedDevice, DeviceViewHolder>(DeviceCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = CardLayoutBinding.inflate(inflater, parent, false)
+        val binding = ScannedDeviceLayoutBinding.inflate(inflater, parent, false)
         return DeviceViewHolder(binding)
     }
 

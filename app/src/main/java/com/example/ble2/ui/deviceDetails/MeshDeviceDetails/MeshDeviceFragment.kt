@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.ble2.AppState
 import com.example.ble2.MainApplication
 import com.example.ble2.R
-import com.example.ble2.Services
+import com.example.ble2.ReadyState
 import com.example.ble2.data.MeshDevice
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentMeshDeviceBinding
@@ -85,7 +85,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
             }
 
             val provisionerConnection =
-                MainApplication.subnet?.let { it1 -> ProvisionerConnection(meshDevice, it1) }
+                AppState.currentSubnet?.let { it1 -> ProvisionerConnection(meshDevice, it1) }
             provisionerConnection?.provision(
                 provisionerConfiguration,
                 null,
@@ -114,7 +114,6 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
             )
 
         }
-
 
         binding.unprovisonButton.setOnClickListener {
             if (node == null) {
@@ -175,16 +174,16 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
         }
         meshDevice.isReady.observe(viewLifecycleOwner) {
             when (it) {
-                Services.ReadyState.READY -> {
+                ReadyState.READY -> {
                     Thread.sleep(200)
                     binding.progressBar.visibility = View.GONE
                     binding.provisionButton.visibility = View.VISIBLE
 
                 }
-                Services.ReadyState.NOT_READY -> {
+                ReadyState.NOT_READY -> {
                     replaceFragment()
                 }
-                Services.ReadyState.UNDEFINED -> {
+                ReadyState.UNDEFINED -> {
                 }
                 else -> {}
             }
@@ -197,10 +196,5 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
         val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout, Home())
         fragmentTransaction.commit()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Services.clearData()
     }
 }

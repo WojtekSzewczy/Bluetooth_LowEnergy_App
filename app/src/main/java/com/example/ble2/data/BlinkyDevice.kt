@@ -1,44 +1,37 @@
 package com.example.ble2.data
 
 import android.bluetooth.*
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
-import android.content.ContentValues.TAG
-import android.util.Log
-import androidx.core.content.ContextCompat
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.ble2.MainApplication
-import com.example.ble2.Services
-import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshBluetoothDeviceCallback
-import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshGattServicesCallback
+import com.example.ble2.ReadyState
 import java.util.*
 
-class BlinkyDevice(val result: ScanResult, val deviceType: ScannedDevice.deviceType) {
+class BlinkyDevice(val scannedDevice: ScannedDevice) {
 
     private val _diodeState = MutableLiveData(DiodeState.UNDEFINED)
     val diodeState: LiveData<DiodeState> = _diodeState
 
     private val _buttonState = MutableLiveData(ButtonState.UNDEFINED)
-
     val buttonState: LiveData<ButtonState> = _buttonState
-    var DiodeCharacteristic: BluetoothGattCharacteristic? = null
-    var ButtonCharacteristic: BluetoothGattCharacteristic? = null
-    var scanResult = result
-    var bluetoothGatt: BluetoothGatt? = null
-    val address: String = result.device.address
-    private val scanner by lazy {
-        val bluetoothManager = ContextCompat.getSystemService(
-            MainApplication.appContext,
-            BluetoothManager::class.java
-        ) as BluetoothManager
 
-        bluetoothManager.adapter.bluetoothLeScanner
-    }
+    private var diodeCharacteristic: BluetoothGattCharacteristic? = null
+    private var buttonCharacteristic: BluetoothGattCharacteristic? = null
 
-    private var refreshBluetoothDeviceCallback: RefreshBluetoothDeviceCallback? = null
-    var refreshGattServicesCallback: RefreshGattServicesCallback? = null
-    private var mtuSize = 0
+    private var bluetoothGatt: BluetoothGatt? = null
+
+    val address = scannedDevice.address
+
+    private val blinkyServiceIndex = 3
+    private val diodeCharacteristicIndex = 0
+    private val buttonCharacteristicIndex = 1
+
+    private val signalOn = byteArrayOf(0x01)
+    private val signalOff = byteArrayOf(0x00)
+
+    private val descriptorUUID: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     enum class DiodeState {
         UNDEFINED,
@@ -48,14 +41,17 @@ class BlinkyDevice(val result: ScanResult, val deviceType: ScannedDevice.deviceT
 
     enum class ButtonState {
         UNDEFINED,
-        CLICKED,
-        UNCLICKED
+        PRESSED,
+        RELEASED
     }
 
-    private val _isReady = MutableLiveData(Services.ReadyState.UNDEFINED)
-    val isReady: LiveData<Services.ReadyState> = _isReady
+    private val _isReady = MutableLiveData(ReadyState.UNDEFINED)
+    val isReady: LiveData<ReadyState> = _isReady
 
-    val bluetoothGattCallback = object : BluetoothGattCallback() {
+    private val handler = Handler(Looper.getMainLooper())
+    private val DELAY_PERIOD: Long = 200
+
+    private val bluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             when (newState) {
                 BluetoothAdapter.STATE_CONNECTED -> {
@@ -63,7 +59,7 @@ class BlinkyDevice(val result: ScanResult, val deviceType: ScannedDevice.deviceT
                     gatt.discoverServices()
                 }
                 BluetoothAdapter.STATE_DISCONNECTED -> {
-                    _isReady.postValue(Services.ReadyState.NOT_READY)
+                    _isReady.postValue(ReadyState.NOT_READY)
                     gatt.close()
                 }
             }
@@ -71,21 +67,25 @@ class BlinkyDevice(val result: ScanResult, val deviceType: ScannedDevice.deviceT
 
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             super.onServicesDiscovered(gatt, status)
-            if (deviceType == ScannedDevice.deviceType.BLINKY_EXAMPLE) {
-                DiodeCharacteristic = gatt.services[3].characteristics[0]
-                ButtonCharacteristic = gatt.services[3].characteristics[1]
-                setNotification(gatt)
+            diodeCharacteristic =
+                gatt.services[blinkyServiceIndex].characteristics[diodeCharacteristicIndex]
+            buttonCharacteristic =
+                gatt.services[blinkyServiceIndex].characteristics[buttonCharacteristicIndex]
+            setNotification(gatt)
+            handler.postDelayed({ readDiodeCharacteristic() }, DELAY_PERIOD)//TODO add queueing
+            handler.postDelayed({ readButtonCharacteristic() }, DELAY_PERIOD * 2)
+            handler.postDelayed({ _isReady.postValue(ReadyState.READY) }, DELAY_PERIOD * 3)
+        }
+
+        override fun onCharacteristicWrite(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+            super.onCharacteristicWrite(gatt, characteristic, status)
+            if (characteristic == diodeCharacteristic) {
+                setDiodeState(characteristic.value)
             }
-
-            _isReady.postValue(Services.ReadyState.READY)
-
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-
-                refreshGattServicesCallback?.onSuccess()
-            } else {
-                refreshGattServicesCallback?.onFail()
-            }
-
         }
 
         override fun onCharacteristicRead(
@@ -94,11 +94,11 @@ class BlinkyDevice(val result: ScanResult, val deviceType: ScannedDevice.deviceT
             status: Int
         ) {
             when (characteristic) {
-                gatt.services[3].characteristics[0] -> {
-                    setDiodeState(characteristic.value.contentToString())
+                diodeCharacteristic -> {
+                    setDiodeState(characteristic.value)
                 }
-                gatt.services[3].characteristics[1] -> {
-                    setButtonState(characteristic.value.contentToString())
+                buttonCharacteristic -> {
+                    setButtonState(characteristic.value)
                 }
             }
         }
@@ -107,120 +107,79 @@ class BlinkyDevice(val result: ScanResult, val deviceType: ScannedDevice.deviceT
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic
         ) {
-            if (characteristic == gatt.services[3].characteristics[1]) {
-                togleButtonState()
-            }
-
-        }
-
-        override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
-            super.onMtuChanged(gatt, mtu, status)
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                mtuSize = mtu
-                gatt.discoverServices()
-            }
-        }
-    }
-    val scanCallback = object : ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult) {
-            super.onScanResult(callbackType, result);
-            if (result.scanRecord == null ||
-                result.scanRecord!!.serviceUuids == null ||
-                result.scanRecord!!.serviceUuids.isEmpty()
-            ) {
-                if (result.device.address == address) {
-                    scanner.stopScan(this)
-                    scanResult = result
-
-
-                    refreshBluetoothDeviceCallback?.success()
-                }
+            if (characteristic == buttonCharacteristic) {
+                toggleButtonState()
             }
         }
     }
 
-    fun setDiodeState(state: String) {
-        if (state == "[1]") {
-            _diodeState.postValue(DiodeState.ON)
-        } else {
-            _diodeState.postValue(DiodeState.OFF)
+    private fun setDiodeState(state: ByteArray) {
+        _diodeState.postValue(if (state.contentEquals(signalOn)) DiodeState.ON else DiodeState.OFF)
+    }
+
+    private fun setButtonState(state: ByteArray) {
+        _buttonState.postValue(if (state.contentEquals(signalOn)) ButtonState.PRESSED else ButtonState.RELEASED)
+    }
+
+    fun toggleButtonState() {
+        if (_buttonState.value == ButtonState.PRESSED) {
+            _buttonState.postValue(ButtonState.RELEASED)
+        } else if (_buttonState.value == ButtonState.RELEASED) {
+            _buttonState.postValue(ButtonState.PRESSED)
         }
     }
 
-    fun setButtonState(state: String) {
-        if (state == "[1]") {
-            _buttonState.postValue(ButtonState.CLICKED)
-        } else {
-            _buttonState.postValue(ButtonState.UNCLICKED)
-        }
-    }
-
-    fun togleButtonState() {
-        if (_buttonState.value == ButtonState.CLICKED) {
-            _buttonState.postValue(ButtonState.UNCLICKED)
-        } else if (_buttonState.value == ButtonState.UNCLICKED) {
-            _buttonState.postValue(ButtonState.CLICKED)
-        }
-
-    }
-
-    fun togleDiodeState() {
+    fun toggleDiodeState() {
         if (_diodeState.value == DiodeState.ON) {
-            _diodeState.value = DiodeState.OFF
+            writeDiode(signalOff)
         } else if (_diodeState.value == DiodeState.OFF) {
-            _diodeState.value = DiodeState.ON
+            writeDiode(signalOn)
         }
-
     }
 
-    fun turnDiodeOff() {
-        val signalOn = byteArrayOf(0x00)
-        writeDiode(signalOn)
+    fun getUUIDs(): String = buildString {
+        bluetoothGatt?.services?.forEach {
+            append("UUID: ")
+            append(it.uuid)
+            appendLine()
+            it.characteristics.forEach {
+                append("   CHARACTERISTIC: ")
+                append(it.uuid)
+                appendLine()
+            }
+            appendLine()
+        }
     }
 
-    fun turnDidodeOn() {
-        val signalOn = byteArrayOf(0x01)
-        writeDiode(signalOn)
-    }
-
-    fun writeDiode(signalOn: ByteArray) {
-        DiodeCharacteristic?.value = signalOn
-        bluetoothGatt?.writeCharacteristic(DiodeCharacteristic)
-    }
-
-
-    enum class ReadyState {
-        UNDEFINED,
-        READY,
-        NOT_READY
+    private fun writeDiode(signalOn: ByteArray) {
+        diodeCharacteristic?.value = signalOn
+        bluetoothGatt?.writeCharacteristic(diodeCharacteristic)
     }
 
     private fun setNotification(gatt: BluetoothGatt) {
-        gatt.setCharacteristicNotification(ButtonCharacteristic, true)
+        gatt.setCharacteristicNotification(buttonCharacteristic, true)
         val descriptor =
-            ButtonCharacteristic?.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"))
+            buttonCharacteristic?.getDescriptor(descriptorUUID)
         descriptor?.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
         gatt.writeDescriptor(descriptor)
     }
 
-
     fun disconnect() {
-        Log.v(TAG, "disconnect")
         bluetoothGatt.let {
             bluetoothGatt?.disconnect()
         }
     }
 
-    fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
-        Log.v("readCharacteristic", "fromCallback")
-        bluetoothGatt?.readCharacteristic(characteristic)
+    fun readButtonCharacteristic() {
+        bluetoothGatt?.readCharacteristic(buttonCharacteristic)
+    }
 
+    fun readDiodeCharacteristic() {
+        bluetoothGatt?.readCharacteristic(diodeCharacteristic)
     }
 
     fun connect() {
-        Log.v(TAG, "connect")
-        bluetoothGatt = result.device.connectGatt(
-
+        bluetoothGatt = scannedDevice.result.device.connectGatt(
             MainApplication.appContext, false, bluetoothGattCallback,
             BluetoothDevice.TRANSPORT_LE
         )

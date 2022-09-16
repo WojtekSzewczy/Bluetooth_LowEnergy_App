@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
-import com.example.ble2.MainApplication
 import com.example.ble2.R
 import com.example.ble2.databinding.FragmentHomeBinding
 import com.example.ble2.ui.adapter.DeviceAdapter
@@ -42,8 +41,6 @@ class Home : Fragment() {
             viewModel.switchScanning()
         }
         binding.Test.setOnClickListener {
-
-
             if (BluetoothMesh.getInstance().networks.first().subnets.size == 0) {
                 Log.v("is empty", "wow such empty")
             } else {
@@ -56,9 +53,6 @@ class Home : Fragment() {
                     BluetoothMesh.getInstance().networks.first().subnets.size.toString()
                 )
             }
-            Log.v("subnet", MainApplication.subnet?.name.toString())
-            Log.v("subnet nodes", MainApplication.subnet?.nodes.toString())
-
         }
         binding.subnetButton.setOnClickListener {
             replaceFragment()
@@ -69,7 +63,6 @@ class Home : Fragment() {
             binding.swipeToRefresh.isRefreshing = false
         }
     }
-
 
     private fun observeViewModelState(adapter: DeviceAdapter) {
         viewModel.devices.observe(viewLifecycleOwner) { devices ->
@@ -90,7 +83,5 @@ class Home : Fragment() {
         fragmentTransaction.replace(R.id.frame_layout, SubnetsFragment())
         fragmentTransaction.commit()
     }
-
-
 }
 

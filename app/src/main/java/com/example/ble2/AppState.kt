@@ -6,6 +6,7 @@ import com.siliconlab.bluetoothmesh.adk.configuration.BluetoothMeshConfiguration
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 object AppState {
+
     var currentSubnet: Subnet? = null
     const val networkName = "network"
 
