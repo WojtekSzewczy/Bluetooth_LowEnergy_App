@@ -7,5 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blinky_device_color">#5a42f5</color>
+    <color name="mesh_device_color">#fcba03</color>
+    <color name="other_device_color">#933B3B</color>
     <color name="backgroundColor">#2B2B2B</color>
 </resources>
