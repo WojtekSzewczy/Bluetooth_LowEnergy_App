@@ -8,12 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import com.example.ble2.AppState
 import com.example.ble2.MainApplication
-import com.example.ble2.R
 import com.example.ble2.databinding.FragmentSubnetsBinding
+import com.example.ble2.ui.MainActivity
 import com.example.ble2.ui.home.Home
 
 
@@ -35,7 +33,7 @@ class SubnetsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                replaceFragment()
+                MainActivity.instance.replaceFragment(Home())
             }
         })
     }
@@ -94,13 +92,5 @@ class SubnetsFragment : Fragment() {
         Log.v("dialog", "nooo")
         val addSubnetDialog = AddSubnetDialog(viewModel)
         addSubnetDialog.show(parentFragmentManager, "tag")
-    }
-
-    private fun replaceFragment() {
-
-        val manager = (view?.context as FragmentActivity).supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout, Home())
-        fragmentTransaction.commit()
     }
 }

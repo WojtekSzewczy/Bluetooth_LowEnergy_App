@@ -7,15 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import com.example.ble2.AppState
 import com.example.ble2.MainApplication
-import com.example.ble2.R
 import com.example.ble2.ReadyState
 import com.example.ble2.data.MeshDevice
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentMeshDeviceBinding
+import com.example.ble2.ui.MainActivity
 import com.example.ble2.ui.adapter.subnet.SubnetsAdapterForMesh
 import com.example.ble2.ui.adapter.subnet.SubnetsViewModel
 import com.example.ble2.ui.home.Home
@@ -28,7 +26,6 @@ import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshBluetoothDevic
 import com.siliconlab.bluetoothmesh.adk.connectable_device.RefreshGattServicesCallback
 import com.siliconlab.bluetoothmesh.adk.data_model.node.Node
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
-import com.siliconlab.bluetoothmesh.adk.provisioning.NodeProperties
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisionerConfiguration
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisionerConnection
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisioningCallback
@@ -46,7 +43,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                replaceFragment()
+                MainActivity.instance.replaceFragment(Home())
             }
         })
     }
@@ -72,28 +69,25 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
 
         binding.provisionButton.setOnClickListener {
             val provisionerConfiguration = ProvisionerConfiguration()
-            provisionerConfiguration.let {
-                it.isEnablingNodeIdentity = true
-                it.isEnablingProxy = true
-                it.isKeepingProxyConnection = true
-
-            }
-            val nodeProperties = NodeProperties()
-            nodeProperties.let {
-                it.address = 5
-                it.attentionTimer = 1
+            provisionerConfiguration.apply {
+                isEnablingNodeIdentity = true
+                isEnablingProxy = true
+                isKeepingProxyConnection = true
+                //isUsingOneGattConnection = true
+                //isGettingDeviceCompositionData = true
             }
 
-            val provisionerConnection =
-                AppState.currentSubnet?.let { it1 -> ProvisionerConnection(meshDevice, it1) }
-            provisionerConnection?.provision(
+            val provisionerConnection = ProvisionerConnection(meshDevice, AppState.currentSubnet!!)
+            provisionerConnection.provision(
                 provisionerConfiguration,
                 null,
                 object : ProvisioningCallback {
-
-
-                    override fun success(p0: ConnectableDevice?, p1: Subnet?, p2: Node?) {
-                        node = p2;
+                    override fun success(
+                        device: ConnectableDevice,
+                        subnet: Subnet,
+                        provisionedNode: Node
+                    ) {
+                        node = provisionedNode;
                         node?.name = meshDevice.address
                         Log.v("Provisioning", "succes")
                         binding.provisionButton.visibility = View.GONE
@@ -178,23 +172,14 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                     Thread.sleep(200)
                     binding.progressBar.visibility = View.GONE
                     binding.provisionButton.visibility = View.VISIBLE
-
                 }
                 ReadyState.NOT_READY -> {
-                    replaceFragment()
+                    MainActivity.instance.replaceFragment(Home())
                 }
                 ReadyState.UNDEFINED -> {
                 }
                 else -> {}
             }
         }
-    }
-
-    private fun replaceFragment() {
-
-        val manager = (view?.context as FragmentActivity).supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout, Home())
-        fragmentTransaction.commit()
     }
 }

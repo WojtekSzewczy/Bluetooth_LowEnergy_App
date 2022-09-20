@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import com.example.ble2.R
+import com.example.ble2.Scanner
 import com.example.ble2.databinding.FragmentHomeBinding
+import com.example.ble2.ui.MainActivity
 import com.example.ble2.ui.adapter.DeviceAdapter
 import com.example.ble2.ui.adapter.subnet.SubnetsFragment
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
@@ -19,6 +19,7 @@ class Home : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
+    private val adapter = DeviceAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,12 +31,12 @@ class Home : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = DeviceAdapter()
-        setupUI(adapter)
-        observeViewModelState(adapter)
+
+        setupUI()
+        observeViewModelState()
     }
 
-    private fun setupUI(adapter: DeviceAdapter) {
+    private fun setupUI() {
         binding.devicesList.adapter = adapter
         binding.scanButton.setOnClickListener {
             viewModel.switchScanning()
@@ -55,7 +56,10 @@ class Home : Fragment() {
             }
         }
         binding.subnetButton.setOnClickListener {
-            replaceFragment()
+            Scanner.stopBleScan()
+            Scanner.clearScanList()
+            (activity as MainActivity?)!!.replaceFragment(SubnetsFragment())
+            //replaceFragment()
 
         }
         binding.swipeToRefresh.setOnRefreshListener {
@@ -64,7 +68,7 @@ class Home : Fragment() {
         }
     }
 
-    private fun observeViewModelState(adapter: DeviceAdapter) {
+    private fun observeViewModelState() {
         viewModel.devices.observe(viewLifecycleOwner) { devices ->
             adapter.apply {
                 submitList(devices)
@@ -74,14 +78,6 @@ class Home : Fragment() {
             binding.scanButton.text =
                 if (currentState) getString(R.string.stop) else getString(R.string.scan)
         }
-    }
-
-    private fun replaceFragment() {
-
-        val manager = (view?.context as FragmentActivity).supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout, SubnetsFragment())
-        fragmentTransaction.commit()
     }
 }
 

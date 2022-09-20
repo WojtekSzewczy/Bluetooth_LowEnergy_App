@@ -14,14 +14,17 @@ import com.example.ble2.data.ScannedDevice
 
 object Scanner {
 
-    val scanner by lazy {
+    val bluetoothAdapter by lazy {
         val bluetoothManager = getSystemService(
             MainApplication.appContext,
             BluetoothManager::class.java
         ) as BluetoothManager
 
-        bluetoothManager.adapter.bluetoothLeScanner
+        bluetoothManager.adapter
     }
+
+    val scanner = bluetoothAdapter.bluetoothLeScanner
+
     private val scanSettings =
         ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
 
@@ -46,12 +49,13 @@ object Scanner {
         clearScanList()
         handler.postDelayed(runnableStoppingScanning, SCAN_PERIOD_IN_MS)
         scanning = true
+
         scanner.startScan(null, scanSettings, leScanCallback)
     }
 
     const val SCAN_PERIOD_IN_MS: Long = 10000
 
-    private fun clearScanList() {
+    fun clearScanList() {
         currentScannedDevices.clear()
         updateScannedDevices()
     }
@@ -82,13 +86,14 @@ object Scanner {
             result: ScanResult,
             device: ScannedDevice
         ) {
+
             if (isUnprovisionedMeshDevice(result)) {
-                device.type = ScannedDevice.deviceType.MESH_DEVICE
+                device.type = ScannedDevice.DeviceType.MESH_DEVICE
                 device.name = "BLUETOOTH MESH DEVICE"
             } else if (result.device.name == "Blinky Example") {
-                device.type = ScannedDevice.deviceType.BLINKY_EXAMPLE
+                device.type = ScannedDevice.DeviceType.BLINKY_EXAMPLE
             } else {
-                device.type = ScannedDevice.deviceType.OTHER
+                device.type = ScannedDevice.DeviceType.OTHER
             }
             addDevice(device)
         }
@@ -97,9 +102,9 @@ object Scanner {
             device: ScannedDevice,
             result: ScanResult?
         ) {
-            if (currentScannedDevices.get(device.address)?.type != ScannedDevice.deviceType.MESH_DEVICE) {
+            if (currentScannedDevices[device.address]?.type != ScannedDevice.DeviceType.MESH_DEVICE) {
                 if (isUnprovisionedMeshDevice(result)) {
-                    device.type = ScannedDevice.deviceType.MESH_DEVICE
+                    device.type = ScannedDevice.DeviceType.MESH_DEVICE
                     device.name = "BLUETOOTH MESH DEVICE"
                     addDevice(device)
                 }
@@ -115,4 +120,6 @@ object Scanner {
         currentScannedDevices[device.address] = device
         updateScannedDevices()
     }
+
+
 }

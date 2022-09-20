@@ -106,7 +106,7 @@ class MeshDevice(val result: ScanResult) : ConnectableDevice() {
         }
     }
 
-    override fun getServiceData(service: UUID?): ByteArray {
+    override fun getServiceData(service: UUID): ByteArray {
         Log.v(ContentValues.TAG, "getServiceData")
         return service?.let { scanResult.scanRecord?.serviceData?.get(ParcelUuid(it)) }!!
     }
