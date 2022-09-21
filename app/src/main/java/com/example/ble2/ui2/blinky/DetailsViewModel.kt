@@ -1,4 +1,4 @@
-package com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails
+package com.example.ble2.ui2.blinky
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,7 +28,7 @@ class DetailsViewModel : ViewModel() {
     val uuiDs: String
         get() = blinkyDevice.getUUIDs()
 
-    fun switchButtonText() {
+    fun toggleButtonText() {
         val currentState = _areServicesVisible.value!!
         _areServicesVisible.postValue(!currentState)
     }

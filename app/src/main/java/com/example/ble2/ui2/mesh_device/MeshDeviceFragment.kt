@@ -1,4 +1,4 @@
-package com.example.ble2.ui.deviceDetails.MeshDeviceDetails
+package com.example.ble2.ui2.mesh_device
 
 import android.os.Bundle
 import android.util.Log
@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.ble2.AppState
+import com.example.ble2.MainActivity
 import com.example.ble2.MainApplication
 import com.example.ble2.ReadyState
 import com.example.ble2.data.MeshDevice
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentMeshDeviceBinding
-import com.example.ble2.ui.MainActivity
 import com.example.ble2.ui.adapter.subnet.SubnetsAdapterForMesh
-import com.example.ble2.ui.adapter.subnet.SubnetsViewModel
-import com.example.ble2.ui.home.Home
+import com.example.ble2.ui2.home.HomeFragment
+import com.example.ble2.ui2.subnet.SubnetsViewModel
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
 import com.siliconlab.bluetoothmesh.adk.ErrorType
 import com.siliconlab.bluetoothmesh.adk.configuration_control.ConfigurationControl
@@ -43,7 +43,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                MainActivity.instance.replaceFragment(Home())
+                MainActivity.instance.replaceFragment(HomeFragment())
             }
         })
     }
@@ -95,12 +95,14 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                         Log.v("elements", node?.elements?.first()?.address.toString())
                     }
 
-                    override fun error(p0: ConnectableDevice, p1: Subnet, p2: ErrorType) {
+                    override fun error(
+                        connectableDevice: ConnectableDevice,
+                        subnet: Subnet,
+                        errorType: ErrorType
+                    ) {
                         Log.v("Provisioning", "error")
                     }
-
                 })
-
             Log.v("Provisioning", "callback")
             Log.v(
                 "network",
@@ -142,16 +144,12 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                     meshDevice.disconnect()
                     binding.unprovisonButton.visibility = View.GONE
                     binding.connectButton.visibility = View.VISIBLE
-
                 }
 
-                override fun error(p0: Node?, p1: ErrorType?) {
-                    Log.v("factory reset", p1!!.message)
+                override fun error(node: Node?, errorType: ErrorType?) {
+                    Log.v("factory reset", errorType!!.message)
                 }
-
             })
-
-
         }
         binding.connectButton.setOnClickListener {
             meshDevice.connect()
@@ -174,7 +172,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                     binding.provisionButton.visibility = View.VISIBLE
                 }
                 ReadyState.NOT_READY -> {
-                    MainActivity.instance.replaceFragment(Home())
+                    MainActivity.instance.replaceFragment(HomeFragment())
                 }
                 ReadyState.UNDEFINED -> {
                 }

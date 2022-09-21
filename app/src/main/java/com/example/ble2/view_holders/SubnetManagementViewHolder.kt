@@ -1,12 +1,12 @@
-package com.example.ble2.ui.adapter.subnet
+package com.example.ble2.view_holders
 
 import android.graphics.Color
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ble2.MainActivity
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetManageLayoutBinding
-import com.example.ble2.ui.MainActivity
-import com.example.ble2.ui.adapter.subnet.selectedSubnet.SubnetDetails
+import com.example.ble2.ui2.subnet.SubnetDetails
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class SubnetManagementViewHolder(val binding: SubnetManageLayoutBinding) :
@@ -29,25 +29,29 @@ class SubnetManagementViewHolder(val binding: SubnetManageLayoutBinding) :
         var nodesAdresses = ""
 
         binding.subnetName.text = subnet.name
-        if (!subnet.nodes.isEmpty()) {
+        nodesAdresses = if (!subnet.nodes.isEmpty()) {
             Log.v("SubnetManagementViewHolder", "true")
             Log.v("SubnetManagementViewHolder", subnet.nodes.first().toString())
-            subnet.nodes.forEach {
-                nodesAdresses += if (it.name == null) {
+            getAddresses(subnet)
+        } else {
+            subnet.nodes.size.toString()
+        }
+        binding.nodesCount.text = nodesAdresses
+        binding.cardView.setOnClickListener {
+            mainActivity.replaceFragment(SubnetDetails(subnet))
+        }
+    }
+
+    private fun getAddresses(subnet: Subnet): String = buildString {
+        subnet.nodes.forEach {
+            append(
+                if (it.name == null) {
                     it.removeOnlyFromLocalStructure()
                     subnet.nodes.size.toString()
                 } else {
                     it.name + "\n"
                 }
-            }
-        } else {
-            nodesAdresses = subnet.nodes.size.toString()
-        }
-
-        binding.nodesCount.text = nodesAdresses
-        binding.cardView.setOnClickListener {
-            mainActivity.replaceFragment(SubnetDetails(subnet))
-
+            )
         }
     }
 }

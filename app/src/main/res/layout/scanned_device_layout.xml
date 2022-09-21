@@ -10,20 +10,11 @@
     app:cardBackgroundColor="#933B3B"
     app:cardElevation="10dp">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
-
         <androidx.constraintlayout.widget.ConstraintLayout
-
-            android:id="@+id/colapsedLayout"
+            android:id="@+id/mainLayout"
+            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -34,8 +25,7 @@
                 android:layout_marginBottom="30dp"
                 android:src="@drawable/other_empty_heart_foreground"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:contentDescription="@string/favourite_icon" />
+                app:layout_constraintRight_toRightOf="parent" />
 
 
             <TextView
@@ -57,9 +47,4 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </com.google.android.material.card.MaterialCardView>

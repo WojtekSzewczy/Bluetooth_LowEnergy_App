@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.example.ble2.databinding.MeshDeviceInSubnetBinding
+import com.example.ble2.view_holders.NodesViewHolder
 import com.siliconlab.bluetoothmesh.adk.data_model.node.Node
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 

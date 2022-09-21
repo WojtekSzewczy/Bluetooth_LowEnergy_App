@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
 
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    tools:context=".ui.deviceDetails.BlinkyDeviceDetails.BlinkyDeviceDetails">
+    app:layout_constraintTop_toTopOf="parent"
+    tools:context=".ui2.blinky.BlinkyDeviceDetails">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -28,41 +28,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
         tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/DiodeControll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/diode_state"
         android:src="@drawable/btn_state_unclicked_foreground"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/device_address"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:contentDescription="@string/diode_state" />
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/ButtonState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/button_state"
         android:src="@drawable/btn_state_unclicked_foreground"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/device_address"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:contentDescription="@string/button_state" />
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/uuids"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/DiodeControll"
-        app:layout_constraintStart_toStartOf="parent"
         android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DiodeControll"
 
         />
 
@@ -73,9 +73,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
         android:text="@string/services"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
         tools:visibility="visible" />
 
 

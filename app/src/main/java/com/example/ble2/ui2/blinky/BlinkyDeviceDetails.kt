@@ -1,4 +1,4 @@
-package com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails
+package com.example.ble2.ui2.blinky
 
 import android.os.Bundle
 import android.util.Log
@@ -7,15 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import com.example.ble2.MainActivity
 import com.example.ble2.R
 import com.example.ble2.ReadyState
 import com.example.ble2.data.BlinkyDevice
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentDeviceDetailsBinding
-import com.example.ble2.ui.home.Home
+import com.example.ble2.ui2.home.HomeFragment
 
 class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment() {
     lateinit var binding: FragmentDeviceDetailsBinding
@@ -25,7 +24,7 @@ class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment()
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                replaceFragment()
+                MainActivity.instance.replaceFragment(HomeFragment())
             }
         })
     }
@@ -57,7 +56,7 @@ class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment()
                 }
                 ReadyState.NOT_READY -> {
                     Log.v("isReady", "is not")
-                    replaceFragment()
+                    MainActivity.instance.replaceFragment(HomeFragment())
                 }
                 ReadyState.UNDEFINED -> {
                     Log.v("is Ready", "undefined")
@@ -103,7 +102,7 @@ class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment()
             viewModel.toggleDiodeState()
         }
         binding.buttonServices.setOnClickListener {
-            viewModel.switchButtonText()
+            viewModel.toggleButtonText()
 
         }
     }
@@ -113,13 +112,6 @@ class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment()
         binding.deviceAddress.visibility = View.VISIBLE
         binding.ButtonState.visibility = View.VISIBLE
         binding.buttonServices.visibility = View.VISIBLE
-    }
-
-    private fun replaceFragment() {
-        val manager = (view?.context as FragmentActivity).supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = manager.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout, Home())
-        fragmentTransaction.commit()
     }
 }
 

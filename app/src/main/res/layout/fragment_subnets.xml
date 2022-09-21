@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
 
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    tools:context=".ui.adapter.subnet.SubnetsFragment">
+    app:layout_constraintTop_toTopOf="parent"
+    tools:context=".ui2.subnet.SubnetsFragment">
 
     <Button
         android:id="@+id/add_subnet"
@@ -20,16 +20,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-       <androidx.recyclerview.widget.RecyclerView
-           android:id="@+id/subnets_list"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_marginTop="30dp"
-           app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toBottomOf="@+id/add_subnet"
-           tools:listitem="@layout/subnet_layout"
-           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subnets_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_subnet"
+        tools:listitem="@layout/subnet_layout" />
 
     <Button
         android:id="@+id/test_btn"

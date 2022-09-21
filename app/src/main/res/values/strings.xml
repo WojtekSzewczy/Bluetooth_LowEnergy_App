@@ -6,6 +6,7 @@
     <string name="diode_state">Diode State</string>
     <string name="button_state">button state</string>
     <string name="back">Back</string>
+    <string name="subnets">Subnets</string>
     <string name="services">services</string>
     <string name="hide_services">hide services</string>
     <!-- TODO: Remove or change this placeholder text -->

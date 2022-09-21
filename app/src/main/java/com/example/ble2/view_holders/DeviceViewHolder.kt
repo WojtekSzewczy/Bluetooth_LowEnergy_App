@@ -1,17 +1,17 @@
-package com.example.ble2.ui.adapter.device
+package com.example.ble2.view_holders
 
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ble2.MainActivity
 import com.example.ble2.R
 import com.example.ble2.Scanner
 import com.example.ble2.data.FavouriteDevices
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.ScannedDeviceLayoutBinding
-import com.example.ble2.ui.MainActivity
-import com.example.ble2.ui.deviceDetails.BlinkyDeviceDetails.BlinkyDeviceDetails
-import com.example.ble2.ui.deviceDetails.MeshDeviceDetails.MeshDeviceFragment
+import com.example.ble2.ui2.blinky.BlinkyDeviceDetails
+import com.example.ble2.ui2.mesh_device.MeshDeviceFragment
 
 class DeviceViewHolder(private val binding: ScannedDeviceLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {

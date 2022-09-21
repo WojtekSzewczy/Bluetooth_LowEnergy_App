@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetLayoutBinding
-import com.example.ble2.ui.deviceDetails.MeshDeviceDetails.SubnetViewHolder
+import com.example.ble2.ui2.subnet.SubnetsViewModel
+import com.example.ble2.view_holders.SubnetViewHolder
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class SubnetsAdapterForMesh :

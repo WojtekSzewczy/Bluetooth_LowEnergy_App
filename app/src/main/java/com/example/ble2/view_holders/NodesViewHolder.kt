@@ -1,10 +1,11 @@
-package com.example.ble2.ui.adapter.subnet.selectedSubnet
+package com.example.ble2.view_holders
 
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.MeshDeviceInSubnetBinding
+import com.example.ble2.ui.adapter.subnet.selectedSubnet.NodesAdapter
 import com.siliconlab.bluetoothmesh.adk.ErrorType
 import com.siliconlab.bluetoothmesh.adk.configuration_control.ConfigurationControl
 import com.siliconlab.bluetoothmesh.adk.configuration_control.FactoryResetCallback
@@ -22,8 +23,8 @@ class NodesViewHolder(
             binding.progressBarRemoving.visibility = View.VISIBLE
             val configurationControl = ConfigurationControl(node)
             configurationControl.factoryReset(object : FactoryResetCallback {
-                override fun success(p0: Node?) {
-                    removeNode(p0)
+                override fun success(node: Node?) {
+                    removeNode(node)
                     Toast.makeText(
                         MainApplication.appContext,
                         "restart node succeded ",
@@ -32,8 +33,8 @@ class NodesViewHolder(
 
                 }
 
-                override fun error(p0: Node?, p1: ErrorType?) {
-                    removeNode(p0)
+                override fun error(node: Node?, errorType: ErrorType?) {
+                    removeNode(node)
                     Toast.makeText(
                         MainApplication.appContext,
                         "failed to restart node",

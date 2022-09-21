@@ -1,11 +1,11 @@
-package com.example.ble2.ui.adapter.subnet
+package com.example.ble2.adapters
 
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetManageLayoutBinding
+import com.example.ble2.ui.adapter.subnet.SubnetCallback
+import com.example.ble2.ui2.subnet.SubnetsViewModel
+import com.example.ble2.view_holders.SubnetManagementViewHolder
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class SubnetAdapter :
@@ -19,28 +19,14 @@ class SubnetAdapter :
         val binding = SubnetManageLayoutBinding.inflate(inflater, parent, false)
         return SubnetManagementViewHolder(binding)
     }
-
-
     override fun onBindViewHolder(
         holder: SubnetManagementViewHolder,
         position: Int
     ) {
-
         val subnet = getItem(position)
         holder.bind(subnet)
-        if (MainApplication.selectedPosition == position) {
-            Log.v("clicked", "white")
-            holder.itemView.setBackgroundColor(Color.parseColor("#000000"))
-        } else {
-            Log.v("clicked", "black")
-            holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"))
-        }
     }
-
     fun getViewModel(viewModel: SubnetsViewModel) {
         subnetViewModel = viewModel
-
     }
-
-
 }

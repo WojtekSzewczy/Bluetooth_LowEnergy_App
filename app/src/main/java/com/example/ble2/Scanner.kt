@@ -32,23 +32,26 @@ object Scanner {
     private val _scannedDevices = MutableLiveData<List<ScannedDevice>>(emptyList())
     val scannedDevices: LiveData<List<ScannedDevice>> = _scannedDevices
 
-    private var scanning = false
+    private val _isScanning = MutableLiveData(false)
+    val isScanning: LiveData<Boolean> = _isScanning
+
+    //private var scanning = false
 
     private val handler = Handler(Looper.getMainLooper())
     private val provisionService = ParcelUuid.fromString("00001827-0000-1000-8000-00805f9b34fb")
 
     private val runnableStoppingScanning = {
-        scanning = false
+        _isScanning.value = false
         scanner.stopScan(leScanCallback)
     }
 
     fun startBleScan() {
-        if (scanning) {
+        if (isScanning.value!!) {
             return
         }
         clearScanList()
         handler.postDelayed(runnableStoppingScanning, SCAN_PERIOD_IN_MS)
-        scanning = true
+        _isScanning.value = true
 
         scanner.startScan(null, scanSettings, leScanCallback)
     }
@@ -67,7 +70,11 @@ object Scanner {
     fun stopBleScan() {
         handler.removeCallbacks(runnableStoppingScanning)
         scanner.stopScan(leScanCallback)
-        scanning = false
+        _isScanning.value = false
+    }
+
+    fun postScanningValue(value: Boolean) {
+        _isScanning.postValue(value)
     }
 
     private val leScanCallback = object : ScanCallback() {

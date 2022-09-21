@@ -1,4 +1,4 @@
-package com.example.ble2.ui.adapter.subnet
+package com.example.ble2.ui2.subnet
 
 import android.app.Dialog
 import android.content.DialogInterface

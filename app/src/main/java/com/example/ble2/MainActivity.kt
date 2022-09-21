@@ -1,4 +1,4 @@
-package com.example.ble2.ui
+package com.example.ble2
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -11,11 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.example.ble2.MainApplication
-import com.example.ble2.R
-import com.example.ble2.Scanner
 import com.example.ble2.databinding.ActivityMainBinding
-import com.example.ble2.ui.home.Home
+import com.example.ble2.ui2.home.HomeFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         instance = this
         requestPermission()
         checkBluetooth()
-        replaceFragment(Home())
+        replaceFragment(HomeFragment())
     }
 
     companion object {

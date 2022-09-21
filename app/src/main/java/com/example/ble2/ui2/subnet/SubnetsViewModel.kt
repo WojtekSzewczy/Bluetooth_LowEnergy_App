@@ -1,13 +1,14 @@
-package com.example.ble2.ui.adapter.subnet
+package com.example.ble2.ui2.subnet
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.ble2.AppState
 
 class SubnetsViewModel {
 
-
-    private val _currentPostion = MutableLiveData(-1)
+    private val defaultPosition = -1
+    private val _currentPostion = MutableLiveData(defaultPosition)
     val currentPostion: LiveData<Int> = _currentPostion
 
     private val _currentName = MutableLiveData("")
@@ -15,11 +16,18 @@ class SubnetsViewModel {
 
     fun setName(name: String) {
         Log.v("set Name", name)
+        if (name != "") {
+            if (AppState.network.canCreateSubnet()) {
+                AppState.currentSubnet = AppState.network.createSubnet(name)
+            } else {
+                Log.v("SubnetsViewModel", "cant create subnet")
+            }
+
+        }
         _currentName.value = name
     }
 
     fun setPostion(postion: Int) {
-        Log.v("setPosition", "poziszon")
         _currentPostion.value = postion
     }
 }

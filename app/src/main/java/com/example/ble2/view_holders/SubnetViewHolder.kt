@@ -1,11 +1,11 @@
-package com.example.ble2.ui.deviceDetails.MeshDeviceDetails
+package com.example.ble2.view_holders
 
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ble2.AppState
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetLayoutBinding
-import com.example.ble2.ui.adapter.subnet.SubnetsViewModel
+import com.example.ble2.ui2.subnet.SubnetsViewModel
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class SubnetViewHolder(val binding: SubnetLayoutBinding) : RecyclerView.ViewHolder(binding.root) {

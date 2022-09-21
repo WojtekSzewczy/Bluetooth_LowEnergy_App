@@ -1,4 +1,4 @@
-package com.example.ble2.ui.adapter.subnet.selectedSubnet
+package com.example.ble2.ui2.subnet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import com.example.ble2.R
 import com.example.ble2.databinding.FragmentSubnetDetailsBinding
-import com.example.ble2.ui.adapter.subnet.SubnetsFragment
+import com.example.ble2.ui.adapter.subnet.selectedSubnet.NodesAdapter
 import com.siliconlab.bluetoothmesh.adk.ErrorType
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.SubnetRemovalCallback

@@ -1,25 +1,24 @@
-package com.example.ble2.ui.adapter.subnet
+package com.example.ble2.ui2.subnet
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.ble2.AppState
+import com.example.ble2.MainActivity
 import com.example.ble2.MainApplication
+import com.example.ble2.adapters.SubnetAdapter
 import com.example.ble2.databinding.FragmentSubnetsBinding
-import com.example.ble2.ui.MainActivity
-import com.example.ble2.ui.home.Home
+import com.example.ble2.ui2.home.HomeFragment
 
 
 class SubnetsFragment : Fragment() {
     private lateinit var binding: FragmentSubnetsBinding
     val adapter = SubnetAdapter()
     val viewModel = SubnetsViewModel()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +32,7 @@ class SubnetsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                MainActivity.instance.replaceFragment(Home())
+                MainActivity.instance.replaceFragment(HomeFragment())
             }
         })
     }
@@ -43,7 +42,6 @@ class SubnetsFragment : Fragment() {
         binding.subnetsList.adapter = adapter
         adapter.getViewModel(viewModel)
         submitNewList()
-
         observeViewModel()
         binding.testBtn.setOnClickListener {
             Log.v("subnets count", AppState.network.subnets.size.toString())
@@ -67,19 +65,7 @@ class SubnetsFragment : Fragment() {
         viewModel.currentName.observe(viewLifecycleOwner) {
             Log.v("currentName", it.toString())
             if (it != "") {
-                if (AppState.network.canCreateSubnet()) {
-                    AppState.currentSubnet = AppState.network.createSubnet(it)
-                    submitNewList()
-
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "can't create subnet",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
-
+                submitNewList()
             }
         }
     }
