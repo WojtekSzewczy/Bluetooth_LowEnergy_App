@@ -1,6 +1,7 @@
 package com.example.ble2.ui2.subnet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.siliconlab.bluetoothmesh.adk.data_model.subnet.SubnetRemovalResult
 
 class SubnetDetails : Fragment() {
 
+    private lateinit var viewModel: SubnetDetailsViewModel
     private val args: SubnetDetailsArgs by navArgs()
     private lateinit var binding: FragmentSubnetDetailsBinding
 
@@ -45,10 +47,15 @@ class SubnetDetails : Fragment() {
 
         val subnetIndex = args.subnet
         val subnet = AppState.network.subnets.toList()[subnetIndex]
+        viewModel = SubnetDetailsViewModel(subnet)
+        observeViewModel()
         val adapter = NodesAdapter(subnet)
         binding.subnetName.text = subnet.name
         adapter.submitList(subnet.nodes.toList())
         binding.nodesList.adapter = adapter
+        binding.settings.setOnClickListener {
+            openDialog()
+        }
         binding.removeSubnet.setOnClickListener {
             if (subnet.nodes.isEmpty()) {
                 subnet.removeSubnet(object : SubnetRemovalCallback {
@@ -63,5 +70,17 @@ class SubnetDetails : Fragment() {
                 })
             }
         }
+    }
+
+    private fun observeViewModel() {
+        viewModel.currentName.observe(viewLifecycleOwner) {
+            binding.subnetName.text = it
+        }
+    }
+
+    private fun openDialog() {
+        Log.v("dialog", "nooo")
+        val addSubnetDialog = SettingsSubnetDialog(viewModel)
+        addSubnetDialog.show(parentFragmentManager, "tag")
     }
 }

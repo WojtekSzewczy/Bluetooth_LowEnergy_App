@@ -1,4 +1,4 @@
-package com.example.ble2.ui.adapter
+package com.example.ble2.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

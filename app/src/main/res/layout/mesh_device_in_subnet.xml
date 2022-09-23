@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="#933B3B"
+    app:cardBackgroundColor="#383838"
     android:layout_margin="5dp"
     android:id="@+id/node"
 

@@ -43,7 +43,6 @@ class SubnetsFragment : Fragment() {
         submitNewList()
         observeViewModel()
         binding.addSubnet.setOnClickListener {
-            Log.v("subnets", AppState.network.subnets.size.toString())
             openDialog()
 
         }
