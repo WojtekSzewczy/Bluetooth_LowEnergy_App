@@ -42,9 +42,8 @@ class SubnetsFragment : Fragment() {
         adapter.getViewModel(viewModel)
         submitNewList()
         observeViewModel()
-        binding.addSubnet.setOnClickListener {
+        binding.addSubnetFab.setOnClickListener {
             openDialog()
-
         }
     }
 

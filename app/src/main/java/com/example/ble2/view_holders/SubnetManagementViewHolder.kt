@@ -1,11 +1,9 @@
 package com.example.ble2.view_holders
 
-import android.graphics.Color
 import android.util.Log
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ble2.AppState
-import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetManageLayoutBinding
 import com.example.ble2.ui2.subnet.SubnetsFragmentDirections
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
@@ -18,13 +16,6 @@ class SubnetManagementViewHolder(val binding: SubnetManageLayoutBinding) :
     fun bind(subnetArgument: Subnet) {
         subnet = subnetArgument
 
-        if (MainApplication.selectedPosition == adapterPosition) {
-            Log.v("clicked", "white")
-            binding.cardView.setBackgroundColor(Color.parseColor("#000000"))
-        } else {
-            Log.v("clicked", "black")
-            binding.cardView.setBackgroundColor(Color.parseColor("#ffffff"))
-        }
         var nodesAdresses = ""
 
         binding.subnetName.text = subnet.name

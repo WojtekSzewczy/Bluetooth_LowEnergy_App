@@ -11,4 +11,5 @@
     <color name="mesh_device_color">#686878</color>
     <color name="other_device_color">#686868</color>
     <color name="backgroundColor">#2B2B2B</color>
+    <color name="scan_button_color">#3B3B3B</color>
 </resources>
