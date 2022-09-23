@@ -8,24 +8,23 @@ import androidx.recyclerview.widget.DiffUtil
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetLayoutBinding
 import com.example.ble2.ui2.subnet.SubnetsViewModel
-import com.example.ble2.view_holders.SubnetViewHolder
+import com.example.ble2.view_holders.SubnetViewHolderForMeshDevice
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class SubnetsAdapterForMesh :
-    androidx.recyclerview.widget.ListAdapter<Subnet, SubnetViewHolder>(SubnetCallback()) {
+    androidx.recyclerview.widget.ListAdapter<Subnet, SubnetViewHolderForMeshDevice>(SubnetCallback()) {
     lateinit var subnetViewModel: SubnetsViewModel
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): SubnetViewHolder {
+    ): SubnetViewHolderForMeshDevice {
         val inflater = LayoutInflater.from(parent.context)
         val binding = SubnetLayoutBinding.inflate(inflater, parent, false)
-        return SubnetViewHolder(binding)
+        return SubnetViewHolderForMeshDevice(binding)
     }
 
-
     override fun onBindViewHolder(
-        holder: SubnetViewHolder,
+        holder: SubnetViewHolderForMeshDevice,
         position: Int
     ) {
 
@@ -45,12 +44,7 @@ class SubnetsAdapterForMesh :
         subnetViewModel = viewModel
 
     }
-
-
 }
-
-
-
 
 class SubnetCallback : DiffUtil.ItemCallback<Subnet>() {
 

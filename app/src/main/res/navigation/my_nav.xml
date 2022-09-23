@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.ble2.ui2.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_subnetsFragment"
+            app:destination="@id/subnetsFragment"
+            app:enterAnim="@animator/slide_in_right"
+            app:exitAnim="@animator/slide_out_left" />
+        <action
+            android:id="@+id/action_homeFragment_to_meshDeviceFragment"
+            app:destination="@id/meshDeviceFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_blinkyDeviceDetails"
+            app:destination="@id/blinkyDeviceDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/blinkyDeviceDetails"
+        android:name="com.example.ble2.ui2.blinky.BlinkyDeviceDetails"
+        android:label="fragment_device_details"
+        tools:layout="@layout/fragment_device_details">
+        <argument
+            android:name="scanResult"
+            app:argType="android.bluetooth.le.ScanResult" />
+        <action
+            android:id="@+id/action_blinkyDeviceDetails_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/meshDeviceFragment"
+        android:name="com.example.ble2.ui2.mesh_device.MeshDeviceFragment"
+        android:label="fragment_mesh_device"
+        tools:layout="@layout/fragment_mesh_device">
+        <action
+            android:id="@+id/action_meshDeviceFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <argument
+            android:name="scanResult"
+            app:argType="android.bluetooth.le.ScanResult" />
+    </fragment>
+    <fragment
+        android:id="@+id/subnetsFragment"
+        android:name="com.example.ble2.ui2.subnet.SubnetsFragment"
+        android:label="fragment_subnets"
+        tools:layout="@layout/fragment_subnets">
+
+        <action
+            android:id="@+id/action_subnetsFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_subnetsFragment_to_subnetDetails3"
+            app:destination="@id/subnetDetails"></action>
+    </fragment>
+    <fragment
+        android:id="@+id/subnetDetails"
+        android:name="com.example.ble2.ui2.subnet.SubnetDetails"
+        android:label="fragment_subnet_details"
+        tools:layout="@layout/fragment_subnet_details">
+        <argument
+            android:name="subnet"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_subnetDetails_to_subnetsFragment"
+            app:destination="@id/subnetsFragment" />
+    </fragment>
+</navigation>

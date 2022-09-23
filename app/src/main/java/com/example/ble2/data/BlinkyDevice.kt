@@ -1,6 +1,7 @@
 package com.example.ble2.data
 
 import android.bluetooth.*
+import android.bluetooth.le.ScanResult
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -9,7 +10,7 @@ import com.example.ble2.MainApplication
 import com.example.ble2.ReadyState
 import java.util.*
 
-class BlinkyDevice(val scannedDevice: ScannedDevice) {
+class BlinkyDevice(val result: ScanResult) {
 
     private val _diodeState = MutableLiveData(DiodeState.UNDEFINED)
     val diodeState: LiveData<DiodeState> = _diodeState
@@ -22,7 +23,7 @@ class BlinkyDevice(val scannedDevice: ScannedDevice) {
 
     private var bluetoothGatt: BluetoothGatt? = null
 
-    val address = scannedDevice.address
+    val address = result.device.address
 
     private val blinkyServiceIndex = 3
     private val diodeCharacteristicIndex = 0
@@ -179,7 +180,7 @@ class BlinkyDevice(val scannedDevice: ScannedDevice) {
     }
 
     fun connect() {
-        bluetoothGatt = scannedDevice.result.device.connectGatt(
+        bluetoothGatt = result.device.connectGatt(
             MainApplication.appContext, false, bluetoothGattCallback,
             BluetoothDevice.TRANSPORT_LE
         )

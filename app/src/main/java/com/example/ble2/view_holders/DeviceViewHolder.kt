@@ -3,6 +3,7 @@ package com.example.ble2.view_holders
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ble2.MainActivity
 import com.example.ble2.R
@@ -10,12 +11,10 @@ import com.example.ble2.Scanner
 import com.example.ble2.data.FavouriteDevices
 import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.ScannedDeviceLayoutBinding
-import com.example.ble2.ui2.blinky.BlinkyDeviceDetails
-import com.example.ble2.ui2.mesh_device.MeshDeviceFragment
+import com.example.ble2.ui2.home.HomeFragmentDirections
 
 class DeviceViewHolder(private val binding: ScannedDeviceLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    val mainActivity = MainActivity.instance
     fun bind(device: ScannedDevice) {
         onClick(device)
         addAndRemoveFromFavourite(device)
@@ -29,12 +28,16 @@ class DeviceViewHolder(private val binding: ScannedDeviceLayoutBinding) :
             binding.device.setOnClickListener {
                 when (device.type) {
                     ScannedDevice.DeviceType.BLINKY_EXAMPLE -> {
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToBlinkyDeviceDetails(device.result)
+                        binding.root.findNavController().navigate(action)
                         clearHomeFragment()
-                        mainActivity.replaceFragment(BlinkyDeviceDetails(device))
                     }
                     ScannedDevice.DeviceType.MESH_DEVICE -> {
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToMeshDeviceFragment(device.result)
+                        binding.root.findNavController().navigate(action)
                         clearHomeFragment()
-                        mainActivity.replaceFragment(MeshDeviceFragment(device))
                     }
                     else -> {}
                 }

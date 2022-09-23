@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="@string/home"
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_baseline_search_24" />
+    <item
+        android:title="@string/subnets"
+        android:id="@+id/subnetsFragment"
+        android:icon="@drawable/ic_baseline_format_list_bulleted_24" />
+    <item
+        android:title="@string/idk"
+        android:id="@+id/idk"
+        android:icon="@drawable/ic_baseline_keyboard_command_key_24" />
+</menu>

@@ -2,17 +2,16 @@ package com.example.ble2.view_holders
 
 import android.graphics.Color
 import android.util.Log
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ble2.MainActivity
+import com.example.ble2.AppState
 import com.example.ble2.MainApplication
 import com.example.ble2.databinding.SubnetManageLayoutBinding
-import com.example.ble2.ui2.subnet.SubnetDetails
+import com.example.ble2.ui2.subnet.SubnetsFragmentDirections
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
 class SubnetManagementViewHolder(val binding: SubnetManageLayoutBinding) :
     RecyclerView.ViewHolder(binding.root) {
-
-    private val mainActivity = MainActivity.instance
 
     private lateinit var subnet: Subnet
 
@@ -38,7 +37,10 @@ class SubnetManagementViewHolder(val binding: SubnetManageLayoutBinding) :
         }
         binding.nodesCount.text = nodesAdresses
         binding.cardView.setOnClickListener {
-            mainActivity.replaceFragment(SubnetDetails(subnet))
+            val subnetIndex = AppState.network.subnets.toList().indexOf(subnet)
+            val action =
+                SubnetsFragmentDirections.actionSubnetsFragmentToSubnetDetails3(subnetIndex)
+            binding.root.findNavController().navigate(action)
         }
     }
 

@@ -6,12 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.ble2.MainActivity
 import com.example.ble2.R
-import com.example.ble2.Scanner
 import com.example.ble2.databinding.FragmentHomeBinding
 import com.example.ble2.ui.adapter.DeviceAdapter
-import com.example.ble2.ui2.subnet.SubnetsFragment
 
 class HomeFragment : Fragment() {
 
@@ -37,11 +34,6 @@ class HomeFragment : Fragment() {
         binding.devicesList.adapter = adapter
         binding.scanButton.setOnClickListener {
             viewModel.switchScanning()
-        }
-        binding.subnetButton.setOnClickListener {
-            Scanner.stopBleScan()
-            Scanner.clearScanList()
-            (activity as MainActivity?)!!.replaceFragment(SubnetsFragment())
         }
         binding.swipeToRefresh.setOnRefreshListener {
             binding.scanButton.performClick()

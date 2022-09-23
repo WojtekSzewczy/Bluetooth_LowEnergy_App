@@ -1,10 +1,10 @@
 package com.example.ble2.ui2.blinky
 
+import android.bluetooth.le.ScanResult
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ble2.data.BlinkyDevice
-import com.example.ble2.data.ScannedDevice
 
 class DetailsViewModel : ViewModel() {
     private val _areServicesVisible = MutableLiveData(true)
@@ -38,8 +38,8 @@ class DetailsViewModel : ViewModel() {
         blinkyDevice.disconnect()
     }
 
-    fun init(scannedDevice: ScannedDevice) {
-        blinkyDevice = BlinkyDevice(scannedDevice)
+    fun init(result: ScanResult) {
+        blinkyDevice = BlinkyDevice(result)
         blinkyDevice.connect()
 
     }

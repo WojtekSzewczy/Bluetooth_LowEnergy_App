@@ -7,12 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.ble2.AppState
-import com.example.ble2.MainActivity
 import com.example.ble2.MainApplication
 import com.example.ble2.adapters.SubnetAdapter
 import com.example.ble2.databinding.FragmentSubnetsBinding
-import com.example.ble2.ui2.home.HomeFragment
 
 
 class SubnetsFragment : Fragment() {
@@ -32,7 +31,7 @@ class SubnetsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                MainActivity.instance.replaceFragment(HomeFragment())
+                binding.root.findNavController().navigateUp()
             }
         })
     }
@@ -43,12 +42,6 @@ class SubnetsFragment : Fragment() {
         adapter.getViewModel(viewModel)
         submitNewList()
         observeViewModel()
-        binding.testBtn.setOnClickListener {
-            Log.v("subnets count", AppState.network.subnets.size.toString())
-
-        }
-
-
         binding.addSubnet.setOnClickListener {
             Log.v("subnets", AppState.network.subnets.size.toString())
             openDialog()

@@ -1,5 +1,6 @@
 package com.example.ble2.ui2.mesh_device
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,15 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.ble2.AppState
-import com.example.ble2.MainActivity
 import com.example.ble2.MainApplication
 import com.example.ble2.ReadyState
 import com.example.ble2.data.MeshDevice
-import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentMeshDeviceBinding
 import com.example.ble2.ui.adapter.subnet.SubnetsAdapterForMesh
-import com.example.ble2.ui2.home.HomeFragment
 import com.example.ble2.ui2.subnet.SubnetsViewModel
 import com.siliconlab.bluetoothmesh.adk.BluetoothMesh
 import com.siliconlab.bluetoothmesh.adk.ErrorType
@@ -31,19 +31,26 @@ import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisionerConnection
 import com.siliconlab.bluetoothmesh.adk.provisioning.ProvisioningCallback
 
 
-class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
-    lateinit var binding: FragmentMeshDeviceBinding
+class MeshDeviceFragment : Fragment() {
 
-    private val meshDevice = MeshDevice(scannedDevice.result)
+    lateinit var binding: FragmentMeshDeviceBinding
+    private val args: MeshDeviceFragmentArgs by navArgs()
+    lateinit var meshDevice: MeshDevice
     private var node: Node? = null
     val adapter = SubnetsAdapterForMesh()
     val viewModel = SubnetsViewModel()
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        meshDevice = MeshDevice(args.scanResult)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.v("MeshDeviceFragment", "on create")
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                MainActivity.instance.replaceFragment(HomeFragment())
+                binding.root.findNavController().navigateUp()
             }
         })
     }
@@ -172,7 +179,7 @@ class MeshDeviceFragment(scannedDevice: ScannedDevice) : Fragment() {
                     binding.provisionButton.visibility = View.VISIBLE
                 }
                 ReadyState.NOT_READY -> {
-                    MainActivity.instance.replaceFragment(HomeFragment())
+                    binding.root.findNavController().navigateUp()
                 }
                 ReadyState.UNDEFINED -> {
                 }

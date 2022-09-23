@@ -8,7 +8,8 @@ import com.example.ble2.databinding.SubnetLayoutBinding
 import com.example.ble2.ui2.subnet.SubnetsViewModel
 import com.siliconlab.bluetoothmesh.adk.data_model.subnet.Subnet
 
-class SubnetViewHolder(val binding: SubnetLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+class SubnetViewHolderForMeshDevice(val binding: SubnetLayoutBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     lateinit var SubnetViewModel: SubnetsViewModel
     fun bind(subnet: Subnet) {

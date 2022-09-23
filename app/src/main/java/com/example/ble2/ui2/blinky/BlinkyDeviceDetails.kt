@@ -8,23 +8,24 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.ble2.MainActivity
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.ble2.R
 import com.example.ble2.ReadyState
 import com.example.ble2.data.BlinkyDevice
-import com.example.ble2.data.ScannedDevice
 import com.example.ble2.databinding.FragmentDeviceDetailsBinding
-import com.example.ble2.ui2.home.HomeFragment
 
-class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment() {
+class BlinkyDeviceDetails : Fragment() {
+
     lateinit var binding: FragmentDeviceDetailsBinding
     private val viewModel: DetailsViewModel by viewModels()
+    private val args: BlinkyDeviceDetailsArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                MainActivity.instance.replaceFragment(HomeFragment())
+                binding.root.findNavController().navigateUp()
             }
         })
     }
@@ -39,7 +40,7 @@ class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.init(scannedDevice)
+        viewModel.init(args.scanResult)
         observeViewModelState()
         observeBlinky()
         setupUI()
@@ -56,7 +57,7 @@ class BlinkyDeviceDetails(private val scannedDevice: ScannedDevice) : Fragment()
                 }
                 ReadyState.NOT_READY -> {
                     Log.v("isReady", "is not")
-                    MainActivity.instance.replaceFragment(HomeFragment())
+                    binding.root.findNavController().navigateUp()
                 }
                 ReadyState.UNDEFINED -> {
                     Log.v("is Ready", "undefined")

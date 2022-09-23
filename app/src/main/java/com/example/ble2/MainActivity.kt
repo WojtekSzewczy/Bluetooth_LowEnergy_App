@@ -10,9 +10,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.ble2.databinding.ActivityMainBinding
-import com.example.ble2.ui2.home.HomeFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,22 +22,17 @@ class MainActivity : AppCompatActivity() {
             ActivityResultContracts.RequestPermission()
         ) { }
 
-    fun replaceFragment(fragment: Fragment) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.apply {
-            replace(R.id.frame_layout, fragment)
-            commit()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         instance = this
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavigation.setupWithNavController(navController)
         requestPermission()
         checkBluetooth()
-        replaceFragment(HomeFragment())
     }
 
     companion object {
@@ -62,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
-
     }
 
     private fun checkBluetooth() {
@@ -82,6 +76,4 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
-
 }
