@@ -1,7 +1,6 @@
 package com.example.ble2.ui2.subnet
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
@@ -19,10 +18,15 @@ class AddSubnetDialog(val viewModel: SubnetsViewModel) : AppCompatDialogFragment
 
 
         builder.setView(binding.root).setTitle("Select Subnet Name")
-            .setPositiveButton("ok", DialogInterface.OnClickListener() { dialog, which ->
+            .setPositiveButton("ok") { _, _ ->
                 viewModel.setName(binding.subnetNameDialog.text.toString())
-            })
+            }
         return builder.create()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.setRotation(true)
     }
 
 

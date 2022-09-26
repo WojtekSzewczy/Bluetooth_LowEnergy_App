@@ -14,6 +14,13 @@ class SubnetsViewModel {
     private val _currentName = MutableLiveData("")
     val currentName: LiveData<String> = _currentName
 
+    private val _rotate = MutableLiveData(false)
+    val rotate: LiveData<Boolean> = _rotate
+
+    fun setRotation(rotate: Boolean) {
+        _rotate.value = rotate
+    }
+
     fun setName(name: String) {
         Log.v("set Name", name)
         if (name != "") {

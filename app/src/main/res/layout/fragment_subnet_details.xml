@@ -33,21 +33,44 @@
             app:layout_constraintTop_toBottomOf="@+id/subnet_name"
             tools:listitem="@layout/mesh_device_in_subnet" />
 
-        <ImageView
-            android:id="@+id/remove_subnet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/trash_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/settings"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="60dp"
+            app:backgroundTint="#FFC107"
+            android:clickable="true"
+            android:src="@drawable/more_options"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:backgroundTint="#FF9107"
+            android:clickable="true"
+            android:src="@drawable/trash_icon"
+            app:layout_constraintBottom_toTopOf="@+id/floating_action_button_more"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:backgroundTint="#FF9107"
+            android:clickable="true"
             android:src="@drawable/settings_foreground"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/floating_action_button_remove"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
