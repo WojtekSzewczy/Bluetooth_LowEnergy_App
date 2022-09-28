@@ -18,14 +18,40 @@
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/btnstateunclicked_foreground.xml" value="0.2685" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/connection_background.xml" value="0.196" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/connection_foreground.xml" value="0.196" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/full_heart_background.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/full_heart_foreground.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.2325" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.2525" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.196" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/more_options.xml" value="0.2325" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/other_empty_heart_foreground.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/other_full_heart_background.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/other_full_heart_foreground.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/settings_foreground.xml" value="0.2325" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/drawable/trash_icon.xml" value="0.2685" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/activity_device_details.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/askdnja.xml" value="0.20260416666666667" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/card_layout.xml" value="0.4" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/fragment_device_details.xml" value="0.25677083333333334" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/fragment_home.xml" value="0.32711621233859395" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/fragment_mesh_device.xml" value="0.2557291666666667" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/fragment_subnet_details.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/fragment_subnets.xml" value="0.264" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/layout_dialog.xml" value="0.27421875" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/layout_settings_dialog.xml" value="0.2828125" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/mesh_device_in_subnet.xml" value="0.365625" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/scanned_device_layout.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/subnet_layout.xml" value="0.365625" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/layout/subnet_manage_layout.xml" value="0.365625" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/menu/bottom_menu.xml" value="0.26197916666666665" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/.xml" value="0.2325" />
         <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/btnsStateUnclicked.xml" value="0.2685" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/connection.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/full_heart.xml" value="0.196" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/full_heart_round.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/other_full_heart.xml" value="0.2525" />
+        <entry key="..\:/Users/Wojciech Szewczyk/AndroidStudioProjects/BLE2/app/src/main/res/mipmap-anydpi-v26/other_full_heart_round.xml" value="0.2525" />
       </map>
     </option>
   </component>
